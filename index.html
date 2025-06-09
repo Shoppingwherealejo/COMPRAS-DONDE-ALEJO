@@ -2,143 +2,145 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>COMPRAS DONDE ALEJO</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: Arial, sans-serif;
       background-color: #121212;
-      color: #fff;
-    }
-    
-<header style="text-align: center; padding: 20px;">
-  <img src="logo-cda.png" alt="Logo COMPRAS DONDE ALEJO" style="max-width: 200px;">
-</header>
-    
-    header {
-      background-color: #0d47a1;
-      padding: 1rem;
-      text-align: center;
+      color: #ffffff;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
+    header {
+      text-align: center;
+      padding: 30px 20px;
+      background-color: #1e1e1e;
+    }
+
+    header img {
+      max-width: 180px;
     }
 
     nav {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      background-color: #1e1e1e;
-      padding: 0.5rem;
+      background-color: #0d0d0d;
+      padding: 10px 0;
+      text-align: center;
     }
 
     nav a {
-      color: #90caf9;
+      color: #00aaff;
+      margin: 0 15px;
       text-decoration: none;
       font-weight: bold;
     }
 
-    .hero {
-      text-align: center;
-      margin: 2rem 1rem;
+    h1 {
+      margin-top: 10px;
+      font-size: 28px;
+      color: #00aaff;
     }
 
-    .products {
+    .catalogo {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      padding: 2rem;
+      gap: 20px;
+      padding: 30px;
     }
 
-    .product {
-      background-color: #1f1f1f;
+    .producto {
+      background-color: #1e1e1e;
       border-radius: 10px;
-      padding: 1rem;
+      padding: 15px;
       text-align: center;
     }
 
-    .product img {
+    .producto img {
       max-width: 100%;
       height: auto;
-      border-radius: 6px;
+      border-radius: 5px;
     }
 
-    .product h3 {
-      margin-top: 0.8rem;
-      color: #90caf9;
+    .producto h2 {
+      color: #00aaff;
+      margin: 10px 0 5px;
     }
 
-    .product p {
-      margin: 0.3rem 0;
+    .producto p {
+      font-size: 14px;
     }
 
     .whatsapp-btn {
       display: inline-block;
-      margin-top: 0.7rem;
+      margin-top: 10px;
+      padding: 10px 20px;
       background-color: #25D366;
       color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
+      border-radius: 5px;
       text-decoration: none;
       font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      background-color: #1e1e1e;
+      color: #888;
     }
   </style>
 </head>
 <body>
 
   <header>
+    <img src="logo-cda.png" alt="Logo COMPRAS DONDE ALEJO" />
     <h1>COMPRAS DONDE ALEJO</h1>
+    <p>¡Bienvenido a tu tienda confiable de productos variados!</p>
   </header>
 
   <nav>
-    <a href="#tecnologia">Tecnología</a>
-    <a href="#belleza">Belleza</a>
-    <a href="#hogar">Hogar</a>
-    <a href="#mas">Más</a>
+    <a href="#">Tecnología</a>
+    <a href="#">Accesorios</a>
+    <a href="#">Hogar</a>
+    <a href="#">Juguetería</a>
+    <a href="#">Belleza</a>
+    <a href="#">Salud</a>
+    <a href="#">Mascotas</a>
   </nav>
 
-  <section class="hero">
-    <h2>Bienvenido a COMPRAS DONDE ALEJO — calidad, variedad y los mejores precios</h2>
-  </section>
-
-  <section class="products" id="belleza">
-    <div class="product">
-      <img src="https://i.imgur.com/nNybMWp.jpg" alt="Afeitadora HW-T8" />
-      <h3>Afeitadora HW-T8</h3>
-      <p>Categoría: Belleza</p>
-      <p>Precio: $9.900</p>
-      <a class="whatsapp-btn" href="https://wa.me/573115750320?text=Hola%2C%20quiero%20comprar%20la%20Afeitadora%20HW-T8" target="_blank">Comprar por WhatsApp</a>
+  <section class="catalogo">
+    <div class="producto">
+      <img src="producto1.jpg" alt="Producto 1">
+      <h2>Producto 1</h2>
+      <p>Descripción breve del producto 1.</p>
+      <a class="whatsapp-btn" href="https://wa.me/573115750320?text=Hola!%20Quiero%20comprar%20el%20Producto%201">Comprar por WhatsApp</a>
     </div>
 
-    <div class="product">
-      <img src="https://i.imgur.com/yKNM0jS.jpg" alt="Afeitadora Kemei T93" />
-      <h3>Afeitadora Kemei T93</h3>
-      <p>Categoría: Belleza</p>
-      <p>Precio: $75.000</p>
-      <a class="whatsapp-btn" href="https://wa.me/573115750320?text=Hola%2C%20quiero%20comprar%20la%20Afeitadora%20Kemei%20T93" target="_blank">Comprar por WhatsApp</a>
+    <div class="producto">
+      <img src="producto2.jpg" alt="Producto 2">
+      <h2>Producto 2</h2>
+      <p>Descripción breve del producto 2.</p>
+      <a class="whatsapp-btn" href="https://wa.me/573115750320?text=Hola!%20Quiero%20comprar%20el%20Producto%202">Comprar por WhatsApp</a>
     </div>
 
-    <div class="product">
-      <img src="https://i.imgur.com/LeJu1Lj.jpg" alt="Afeitadora VGR-376" />
-      <h3>Afeitadora VGR-376</h3>
-      <p>Categoría: Belleza</p>
-      <p>Precio: $20.000</p>
-      <a class="whatsapp-btn" href="https://wa.me/573115750320?text=Hola%2C%20quiero%20comprar%20la%20Afeitadora%20VGR-376" target="_blank">Comprar por WhatsApp</a>
+    <div class="producto">
+      <img src="producto3.jpg" alt="Producto 3">
+      <h2>Producto 3</h2>
+      <p>Descripción breve del producto 3.</p>
+      <a class="whatsapp-btn" href="https://wa.me/573115750320?text=Hola!%20Quiero%20comprar%20el%20Producto%203">Comprar por WhatsApp</a>
     </div>
-  </section>
 
-  <section class="products" id="tecnologia">
-    <div class="product">
-      <img src="https://i.imgur.com/bcGpX4h.jpg" alt="Airdots Pro 3A" />
-      <h3>Airdots Pro 3A</h3>
-      <p>Categoría: Tecnología</p>
-      <p>Precio: $22.000</p>
-      <a class="whatsapp-btn" href="https://wa.me/573115750320?text=Hola%2C%20quiero%20comprar%20los%20Airdots%20Pro%203A" target="_blank">Comprar por WhatsApp</a>
+    <div class="producto">
+      <img src="producto4.jpg" alt="Producto 4">
+      <h2>Producto 4</h2>
+      <p>Descripción breve del producto 4.</p>
+      <a class="whatsapp-btn" href="https://wa.me/573115750320?text=Hola!%20Quiero%20comprar%20el%20Producto%204">Comprar por WhatsApp</a>
     </div>
   </section>
+
+  <footer>
+    © 2025 COMPRAS DONDE ALEJO - Todos los derechos reservados.
+  </footer>
 
 </body>
 </html>
