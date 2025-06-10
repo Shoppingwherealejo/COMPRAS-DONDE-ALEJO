@@ -3,81 +3,95 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>COMPRAS DONDE ALEJO</title>
+  <script type="module">
+    // Configuración de Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";const firebaseConfig = {
+  apiKey: "TU_API_KEY_AQUI",
+  authDomain: "compras-donde-alejo.firebaseapp.com",
+  projectId: "compras-donde-alejo",
+  storageBucket: "compras-donde-alejo.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abc123"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const form = document.getElementById("add-product-form");
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const clave = document.getElementById("clave").value;
+    if (clave !== "alejo123") {
+      alert("Clave incorrecta");
+      return;
+    }
+    const nombre = document.getElementById("nombre").value;
+    const descripcion = document.getElementById("descripcion").value;
+    const categoria = document.getElementById("categoria-producto").value;
+    const imagen = document.getElementById("imagen").value;
+
+    await addDoc(collection(db, "productos"), {
+      nombre, descripcion, categoria, imagen
+    });
+
+    alert("Producto agregado exitosamente");
+    form.reset();
+    location.reload();
+  });
+}
+
+async function cargarProductos() {
+  const contenedor = document.querySelector(".catalogo");
+  const querySnapshot = await getDocs(collection(db, "productos"));
+  querySnapshot.forEach((doc) => {
+    const p = doc.data();
+    const div = document.createElement("div");
+    div.className = `producto ${p.categoria} show`;
+    div.innerHTML = `
+      <img src="${p.imagen}" alt="${p.nombre}" />
+      <h2>${p.nombre}</h2>
+      <p>${p.descripcion}</p>
+      <a class="whatsapp-btn" href="https://wa.me/573008148195?text=Hola!%20Quiero%20comprar%20${encodeURIComponent(p.nombre)}">Comprar</a>
+    `;
+    contenedor.appendChild(div);
+  });
+}
+
+window.filtrarProductos = function () {
+  const filtro = document.getElementById("categoria").value;
+  const productos = document.querySelectorAll(".producto");
+  productos.forEach(producto => {
+    if (filtro === "todos" || producto.classList.contains(filtro)) {
+      producto.classList.add("show");
+    } else {
+      producto.classList.remove("show");
+    }
+  });
+}
+
+cargarProductos();
+
+  </script>
   <style>
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #0e0e0e;
-      color: #ffffff;
-    }
-    header {
-      text-align: center;
-      padding: 40px 20px;
-      background-color: #151515;
-    }
-    header img {
-      max-width: 180px;
-    }
-    h1 {
-      color: #00aaff;
-      margin-top: 10px;
-    }
-    nav {
-      background-color: #121212;
-      padding: 12px;
-      text-align: center;
-    }
-    nav select {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-      background-color: #1a1a1a;
-      color: #00aaff;
-    }
-    .catalogo {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
-      padding: 40px 30px;
-    }
-    .producto {
-      background-color: #1a1a1a;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      display: none;
-    }
-    .producto.show {
-      display: block;
-    }
-    .producto img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-    .producto h2 {
-      color: #00aaff;
-      margin-top: 15px;
-    }
-    .producto p {
-      color: #ccc;
-    }
-    .whatsapp-btn {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 10px 22px;
-      background-color: #25D366;
-      color: white;
-      border-radius: 6px;
-      text-decoration: none;
-    }
-    footer {
-      text-align: center;
-      padding: 25px;
-      background-color: #151515;
-      color: #888;
-    }
+    body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #0e0e0e; color: #fff; }
+    header { text-align: center; padding: 40px 20px; background-color: #151515; }
+    header img { max-width: 180px; }
+    nav { background-color: #121212; padding: 12px; text-align: center; }
+    nav select { padding: 10px; font-size: 16px; border-radius: 6px; border: none; background-color: #1a1a1a; color: #00aaff; }
+    .catalogo { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; padding: 40px 30px; }
+    .producto { background-color: #1a1a1a; border-radius: 12px; padding: 20px; text-align: center; display: none; }
+    .producto.show { display: block; }
+    .producto img { max-width: 100%; border-radius: 8px; }
+    .producto h2 { color: #00aaff; margin-top: 15px; }
+    .producto p { color: #ccc; }
+    .whatsapp-btn { display: inline-block; margin-top: 12px; padding: 10px 22px; background-color: #25D366; color: white; border-radius: 6px; text-decoration: none; }
+    footer { text-align: center; padding: 25px; background-color: #151515; color: #888; }
+    .formulario { max-width: 400px; margin: 40px auto; background: #1f1f1f; padding: 20px; border-radius: 10px; }
+    .formulario input, .formulario select { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: none; background: #2a2a2a; color: white; }
+    .formulario button { width: 100%; padding: 10px; background-color: #00aaff; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -98,32 +112,25 @@
       <option value="mascotas">Mascotas</option>
       <option value="cuidado-personal">Cuidado personal</option>
     </select>
-  </nav>  <section class="catalogo">
-    <div class="producto tecnologia show">
-      <img src="producto1.jpg" alt="Audífonos Bluetooth">
-      <h2>Audífonos Bluetooth</h2>
-      <p>Conexión rápida y sonido HD.</p>
-      <a class="whatsapp-btn" href="https://wa.me/573008148195">Comprar</a>
-    </div>
-    <div class="producto hogar show">
-      <img src="producto2.jpg" alt="Lámpara LED">
-      <h2>Lámpara LED</h2>
-      <p>Ideal para decorar tu habitación.</p>
-      <a class="whatsapp-btn" href="https://wa.me/573008148195">Comprar</a>
-    </div>
-    <div class="producto salud show">
-      <img src="producto3.jpg" alt="Oxímetro digital">
-      <h2>Oxímetro digital</h2>
-      <p>Controla tu salud en casa.</p>
-      <a class="whatsapp-btn" href="https://wa.me/573008148195">Comprar</a>
-    </div>
-    <div class="producto cuidado-personal show">
-      <img src="producto4.jpg" alt="Cepillo Facial">
-      <h2>Cepillo Facial</h2>
-      <p>Para una limpieza profunda.</p>
-      <a class="whatsapp-btn" href="https://wa.me/573008148195">Comprar</a>
-    </div>
-  </section>  <section style="background-color:#111; padding:40px 20px; text-align:center;">
+  </nav>  <div class="formulario">
+    <form id="add-product-form">
+      <input type="password" id="clave" placeholder="Clave secreta" required>
+      <input type="text" id="nombre" placeholder="Nombre del producto" required>
+      <input type="text" id="descripcion" placeholder="Descripción" required>
+      <input type="text" id="imagen" placeholder="URL de la imagen" required>
+      <select id="categoria-producto" required>
+        <option value="tecnologia">Tecnología</option>
+        <option value="accesorios">Accesorios</option>
+        <option value="hogar">Hogar</option>
+        <option value="jugueteria">Juguetería</option>
+        <option value="belleza">Belleza</option>
+        <option value="salud">Salud</option>
+        <option value="mascotas">Mascotas</option>
+        <option value="cuidado-personal">Cuidado personal</option>
+      </select>
+      <button type="submit">Agregar producto</button>
+    </form>
+  </div>  <section class="catalogo"></section>  <section style="background-color:#111; padding:40px 20px; text-align:center;">
     <h2 style="color:#00aaff; font-size:22px; margin-bottom:20px;">Contáctanos</h2>
     <p style="color:#ccc; font-size:16px;">¿Tienes preguntas o necesitas ayuda? Estamos disponibles por WhatsApp.</p>
     <p style="color:#ccc; font-size:16px;">📱 <strong>300 814 8195</strong></p>
@@ -145,18 +152,6 @@
     </div>
   </section>  <footer>
     © 2025 COMPRAS DONDE ALEJO - Todos los derechos reservados.
-  </footer>  <script>
-    function filtrarProductos() {
-      const filtro = document.getElementById("categoria").value;
-      const productos = document.querySelectorAll(".producto");
-
-      productos.forEach(producto => {
-        if (filtro === "todos" || producto.classList.contains(filtro)) {
-          producto.classList.add("show");
-        } else {
-          producto.classList.remove("show");
-        }
-      });
-    }
-  </script></body>
+  </footer>
+</body>
 </html>
