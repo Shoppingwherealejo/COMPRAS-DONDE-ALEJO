@@ -82,12 +82,13 @@ cargarProductos();
       position: absolute;
       top: 10px;
       left: 10px;
-      background: #00aaff;
+      background: #444;
       color: white;
-      padding: 6px 12px;
+      padding: 8px 10px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      font-size: 18px;
     }
     nav { background-color: #121212; padding: 12px; text-align: center; }
     nav select { padding: 10px; font-size: 16px; border-radius: 6px; border: none; background-color: #1a1a1a; color: #00aaff; }
@@ -99,31 +100,18 @@ cargarProductos();
     .producto p { color: #ccc; }
     .whatsapp-btn { display: inline-block; margin-top: 12px; padding: 10px 22px; background-color: #25D366; color: white; border-radius: 6px; text-decoration: none; }
     footer { text-align: center; padding: 25px; background-color: #151515; color: #888; }
-    .formulario { max-width: 400px; margin: 40px auto; background: #1f1f1f; padding: 20px; border-radius: 10px; display: none; }
+    .formulario { max-width: 400px; margin: 10px auto; background: #1f1f1f; padding: 20px; border-radius: 10px; display: none; }
     .formulario input, .formulario select { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: none; background: #2a2a2a; color: white; }
     .formulario button { width: 100%; padding: 10px; background-color: #00aaff; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body>
   <header>
-    <button id="admin-btn" onclick="toggleAdminPanel()">⚙️ Admin</button>
+    <button id="admin-btn" onclick="toggleAdminPanel()">🔧</button>
     <img src="logo-cda.png" alt="Logo CDA">
     <h1>COMPRAS DONDE ALEJO</h1>
     <p>¡Bienvenido a tu tienda confiable de productos variados!</p>
-  </header>  <nav>
-    <label for="categoria">Filtrar por categoría:</label>
-    <select id="categoria" onchange="filtrarProductos()">
-      <option value="todos">Mostrar todos</option>
-      <option value="tecnologia">Tecnología</option>
-      <option value="accesorios">Accesorios</option>
-      <option value="hogar">Hogar</option>
-      <option value="jugueteria">Juguetería</option>
-      <option value="belleza">Belleza</option>
-      <option value="salud">Salud</option>
-      <option value="mascotas">Mascotas</option>
-      <option value="cuidado-personal">Cuidado personal</option>
-    </select>
-  </nav>  <div class="formulario">
+  </header>  <div class="formulario">
     <form id="add-product-form">
       <input type="text" id="nombre" placeholder="Nombre del producto" required>
       <input type="text" id="descripcion" placeholder="Descripción" required>
@@ -140,7 +128,20 @@ cargarProductos();
       </select>
       <button type="submit">Agregar producto</button>
     </form>
-  </div>  <section class="catalogo"></section>  <section style="background-color:#111; padding:40px 20px; text-align:center;">
+  </div>  <nav>
+    <label for="categoria">Filtrar por categoría:</label>
+    <select id="categoria" onchange="filtrarProductos()">
+      <option value="todos">Mostrar todos</option>
+      <option value="tecnologia">Tecnología</option>
+      <option value="accesorios">Accesorios</option>
+      <option value="hogar">Hogar</option>
+      <option value="jugueteria">Juguetería</option>
+      <option value="belleza">Belleza</option>
+      <option value="salud">Salud</option>
+      <option value="mascotas">Mascotas</option>
+      <option value="cuidado-personal">Cuidado personal</option>
+    </select>
+  </nav>  <section class="catalogo"></section>  <section style="background-color:#111; padding:40px 20px; text-align:center;">
     <h2 style="color:#00aaff; font-size:22px; margin-bottom:20px;">Contáctanos</h2>
     <p style="color:#ccc; font-size:16px;">📱 <strong>300 814 8195</strong></p>
     <p style="color:#ccc; font-size:16px;">✉️ <strong>comprasdondealejo@gmail.com</strong></p>
