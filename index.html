@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>COMPRAS DONDE ALEJO</title>
   <script type="module">
@@ -9,7 +9,7 @@
     import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "Alejo123", // 🔁 Reemplaza esto por tu apiKey real
+      apiKey: "Alejo123",
       authDomain: "compras-donde-alejo.firebaseapp.com",
       projectId: "compras-donde-alejo",
       storageBucket: "compras-donde-alejo.appspot.com",
@@ -41,8 +41,7 @@
       const categoria = document.getElementById("categoria-producto").value;
 
       if (id) {
-        const ref = doc(db, "productos", id);
-        await updateDoc(ref, { nombre, descripcion, imagen, categoria });
+        await updateDoc(doc(db, "productos", id), { nombre, descripcion, imagen, categoria });
       } else {
         await addDoc(collection(db, "productos"), { nombre, descripcion, imagen, categoria });
       }
@@ -119,6 +118,7 @@
     .formulario { display: none; max-width: 400px; margin: 30px auto; background: #1f1f1f; padding: 20px; border-radius: 10px; }
     .formulario input, .formulario select { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: none; background: #2a2a2a; color: white; }
     .formulario button { width: 100%; padding: 10px; background: #00aaff; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; }
+    footer { background: #151515; padding: 20px; text-align: center; color: #888; }
   </style>
 </head>
 <body>
@@ -167,29 +167,36 @@
   </nav>
 
   <section class="catalogo"></section>
+
+  <section style="background-color:#111; padding:40px 20px; text-align:center;">
+    <h2 style="color:#00aaff; font-size:22px; margin-bottom:20px;">Contáctanos</h2>
+    <p style="color:#ccc; font-size:16px;">📱 <strong>300 814 8195</strong></p>
+    <p style="color:#ccc; font-size:16px;">✉️ <strong>comprasdondealejo@gmail.com</strong></p>
+    <p style="color:#ccc; font-size:16px;">🕐 <strong>Horario: 08:00 a.m. - 05:00 p.m.</strong></p>
+    <div style="margin-top:25px;">
+      <a href="https://wa.me/573008148195" target="_blank" style="margin:0 10px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" width="32">
+      </a>
+      <a href="https://instagram.com/" target="_blank" style="margin:0 10px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" width="32">
+      </a>
+      <a href="https://facebook.com/" target="_blank" style="margin:0 10px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" width="32">
+      </a>
+      <a href="https://tiktok.com/" target="_blank" style="margin:0 10px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" width="32">
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 COMPRAS DONDE ALEJO - Todos los derechos reservados.
+  </footer>
 </body>
 </html>
-<section style="background-color:#111; padding:40px 20px; text-align:center;">
-  <h2 style="color:#00aaff; font-size:22px; margin-bottom:20px;">Contáctanos</h2>
-  <p style="color:#ccc; font-size:16px;">📱 <strong>300 814 8195</strong></p>
-  <p style="color:#ccc; font-size:16px;">✉️ <strong>comprasdondealejo@gmail.com</strong></p>
-  <p style="color:#ccc; font-size:16px;">🕐 <strong>Horario: 08:00 a.m. - 05:00 p.m.</strong></p>
-  <div style="margin-top:25px;">
-    <a href="https://wa.me/573008148195" target="_blank" style="margin:0 10px;">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" width="32">
-    </a>
-    <a href="https://instagram.com/" target="_blank" style="margin:0 10px;">
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" width="32">
-    </a>
-    <a href="https://facebook.com/" target="_blank" style="margin:0 10px;">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" width="32">
-    </a>
-    <a href="https://tiktok.com/" target="_blank" style="margin:0 10px;">
-      <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" width="32">
-    </a>
-  </div>
-</section>
+"""
 
-<footer style="text-align:center; padding:20px; background:#151515; color:#888;">
-  © 2025 COMPRAS DONDE ALEJO - Todos los derechos reservados.
-</footer>
+with open("/mnt/data/index.html", "w", encoding="utf-8") as f:
+    f.write(html_code)
+
+"/mnt/data/index.html"
