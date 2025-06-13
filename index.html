@@ -1,269 +1,212 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>COMPRAS DONDE ALEJO</title>
-  <style>
-    body {
-      background-color: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #000;
-      padding: 10px 20px;
-    }
-    header .title {
-      text-align: center;
-      flex-grow: 1;
-    }
-    header img {
-      height: 60px;
-    }
-    h1 {
-      margin: 0;
-      font-size: 24px;
-      color: #00aaff;
-    }
-    h2 {
-      margin: 5px 0 0;
-      font-size: 16px;
-      color: #ccc;
-    }
-    #productos {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-    .producto {
-      background-color: #222;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-      text-align: center;
-      position: relative;
-    }
-    .producto img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-    .producto h3 {
-      font-size: 18px;
-      margin: 10px 0 5px;
-    }
-    .producto p {
-      margin: 5px 0;
-    }
-    .producto a {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 5px 10px;
-      background-color: #00aaff;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-    #filtroCategoria {
-      display: block;
-      margin: 10px auto;
-      padding: 8px;
-      background-color: #222;
-      color: #fff;
-      border: 1px solid #555;
-      border-radius: 5px;
-    }
-    #adminBtn {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      font-size: 24px;
-      cursor: pointer;
-    }
-    #adminPanel {
-      display: none;
-      background-color: #111;
-      padding: 20px;
-      border-top: 2px solid #00aaff;
-    }
-    #adminPanel input {
-      margin: 5px;
-      padding: 8px;
-      border: none;
-      border-radius: 5px;
-      width: calc(100% - 20px);
-    }
-    #adminPanel button {
-      padding: 8px 16px;
-      background-color: #00aaff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-    .admin-controls {
-      display: none;
-      margin-top: 10px;
-    }
-    .admin-controls button {
-      margin: 3px;
-      padding: 4px 8px;
-      font-size: 12px;
-    }
-  </style>
-</head>
-<body>
-  <div id="adminBtn">🔧</div>
-  <header>
-    <div class="title">
-      <h1>COMPRAS DONDE ALEJO</h1>
-      <h2>¡Bienvenido! Encuentra lo que necesitas al mejor precio</h2>
-    </div>
-    <img src="https://i.postimg.cc/7YvHMPPg/logo-cda.png" alt="Logo CDA" />
-  </header>  <select id="filtroCategoria">
-    <option value="">Todas las Categorías</option>
-  </select>  <div id="adminPanel">
-    <input type="text" id="nombre" placeholder="Nombre del producto">
-    <input type="number" id="precio" placeholder="Precio">
-    <input type="text" id="categoria" placeholder="Categoría">
-    <input type="text" id="imagen" placeholder="URL de la imagen">
-    <button onclick="agregarProducto()">Agregar Producto</button>
-  </div>  <div id="productos"></div>  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      getDocs,
-      addDoc,
-      deleteDoc,
-      updateDoc,
-      doc
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDPiIJt_N-_vMQ70W85BCPX54Aq5t9lC4o",
+      apiKey: "Alejo123",
       authDomain: "compras-donde-alejo.firebaseapp.com",
       projectId: "compras-donde-alejo",
       storageBucket: "compras-donde-alejo.appspot.com",
-      messagingSenderId: "681481122465",
-      appId: "1:681481122465:web:bf6c610f33e0c073099ef4"
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abc123"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const productosCol = collection(db, "productos");
+    let modoAdmin = false;
 
-    const contenedor = document.getElementById("productos");
-    const filtro = document.getElementById("filtroCategoria");
-    const adminPanel = document.getElementById("adminPanel");
-    const adminBtn = document.getElementById("adminBtn");
-    let adminActivo = false;
-
-    let productos = [];
-
-    async function cargarProductos() {
-      const snapshot = await getDocs(productosCol);
-      productos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      mostrarCategorias();
-      mostrarProductos();
-    }
-
-    function mostrarCategorias() {
-      const categorias = [...new Set(productos.map(p => p.categoria))];
-      filtro.innerHTML = '<option value="">Todas las Categorías</option>';
-      categorias.sort();
-      categorias.forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat;
-        option.textContent = cat;
-        filtro.appendChild(option);
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("admin-btn").addEventListener("click", () => {
+        const clave = prompt("Ingresa la clave de administrador:");
+        if (clave === "alejo123") {
+          modoAdmin = true;
+          document.querySelector(".formulario").style.display = "block";
+          document.querySelectorAll(".admin-btns").forEach(btn => btn.style.display = "block");
+        } else {
+          alert("Clave incorrecta.");
+        }
       });
-    }
 
-    function mostrarProductos() {
-      contenedor.innerHTML = "";
-      const cat = filtro.value;
-      const filtrados = cat ? productos.filter(p => p.categoria === cat) : productos;
-      filtrados.forEach(p => {
-        const div = document.createElement("div");
-        div.className = "producto";
-        div.innerHTML = `
-          <img src="${p.imagen}" alt="${p.nombre}" />
-          <h3>${p.nombre}</h3>
-          <p><strong>Precio:</strong> $${Number(p.precio).toLocaleString()}</p>
-          <p><strong>Categoría:</strong> ${p.categoria}</p>
-          <a href="https://wa.me/573115750320?text=Hola%2C%20quiero%20comprar%20el%20producto:%20${encodeURIComponent(p.nombre)}" target="_blank">Comprar por WhatsApp</a>
-          <div class="admin-controls" style="${adminActivo ? 'display:block;' : 'display:none;'}">
-            <button onclick="editarProducto('${p.id}')">Editar</button>
-            <button onclick="eliminarProducto('${p.id}')">Eliminar</button>
-          </div>
-        `;
-        contenedor.appendChild(div);
+      document.getElementById("add-product-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const id = document.getElementById("edit-id").value;
+        const nombre = document.getElementById("nombre").value.trim();
+        const descripcion = document.getElementById("descripcion").value.trim();
+        const imagen = document.getElementById("imagen").value.trim();
+        const categoria = document.getElementById("categoria-producto").value;
+
+        if (!nombre || !descripcion || !imagen || !categoria) {
+          alert("Por favor, completa todos los campos.");
+          return;
+        }
+
+        try {
+          if (id) {
+            await updateDoc(doc(db, "productos", id), { nombre, descripcion, imagen, categoria });
+            alert("Producto actualizado.");
+          } else {
+            await addDoc(collection(db, "productos"), { nombre, descripcion, imagen, categoria });
+            alert("Producto agregado.");
+          }
+          location.reload();
+        } catch (error) {
+          alert("Error al guardar el producto.");
+        }
       });
-    }
 
-    filtro.addEventListener("change", mostrarProductos);
-
-    adminBtn.addEventListener("click", () => {
-      const clave = prompt("Ingresa la clave secreta:");
-      if (clave === "admin123") {
-        adminPanel.style.display = "block";
-        adminActivo = true;
-        mostrarProductos();
-      } else {
-        alert("Clave incorrecta");
-      }
-    });
-
-    window.agregarProducto = async function() {
-      const nombre = document.getElementById("nombre").value;
-      const precio = document.getElementById("precio").value;
-      const categoria = document.getElementById("categoria").value;
-      const imagen = document.getElementById("imagen").value;
-      if (nombre && precio && categoria && imagen) {
-        await addDoc(productosCol, { nombre, precio, categoria, imagen });
-        document.getElementById("nombre").value = "";
-        document.getElementById("precio").value = "";
-        document.getElementById("categoria").value = "";
-        document.getElementById("imagen").value = "";
-        cargarProductos();
-      } else {
-        alert("Por favor completa todos los campos");
-      }
-    }
-
-    window.eliminarProducto = async function(id) {
-      if (confirm("¿Estás seguro de eliminar este producto?")) {
-        await deleteDoc(doc(db, "productos", id));
-        cargarProductos();
-      }
-    }
-
-    window.editarProducto = async function(id) {
-      const producto = productos.find(p => p.id === id);
-      const nuevoNombre = prompt("Nuevo nombre:", producto.nombre);
-      const nuevoPrecio = prompt("Nuevo precio:", producto.precio);
-      const nuevaCategoria = prompt("Nueva categoría:", producto.categoria);
-      const nuevaImagen = prompt("Nueva imagen (URL):", producto.imagen);
-      if (nuevoNombre && nuevoPrecio && nuevaCategoria && nuevaImagen) {
-        await updateDoc(doc(db, "productos", id), {
-          nombre: nuevoNombre,
-          precio: nuevoPrecio,
-          categoria: nuevaCategoria,
-          imagen: nuevaImagen
+      async function cargarProductos() {
+        const contenedor = document.querySelector(".catalogo");
+        contenedor.innerHTML = "";
+        const querySnapshot = await getDocs(collection(db, "productos"));
+        if (querySnapshot.empty) {
+          contenedor.innerHTML = "<p class='mensaje'>🔍 Aún no hay productos en el catálogo.</p>";
+        }
+        querySnapshot.forEach((docSnap) => {
+          const p = docSnap.data();
+          const id = docSnap.id;
+          const div = document.createElement("div");
+          div.className = `producto ${p.categoria}`;
+          div.innerHTML = `
+            <img src="${p.imagen}" alt="${p.nombre}" />
+            <h2>${p.nombre}</h2>
+            <p>${p.descripcion}</p>
+            <a class="whatsapp-btn" href="https://wa.me/573008148195?text=Hola!%20Quiero%20comprar%20${encodeURIComponent(p.nombre)}">Comprar</a>
+            <div class="admin-btns" style="display:none; margin-top:10px;">
+              <button onclick="editarProducto('${id}', \`${p.nombre}\`, \`${p.descripcion}\`, \`${p.imagen}\`, \`${p.categoria}\`)">✏️</button>
+              <button onclick="eliminarProducto('${id}')">🗑️</button>
+            </div>
+          `;
+          contenedor.appendChild(div);
         });
-        cargarProductos();
-      } else {
-        alert("Todos los campos deben completarse para actualizar");
       }
-    }
 
-    cargarProductos();
-  </script></body>
+      window.editarProducto = function(id, nombre, descripcion, imagen, categoria) {
+        document.getElementById("edit-id").value = id;
+        document.getElementById("nombre").value = nombre;
+        document.getElementById("descripcion").value = descripcion;
+        document.getElementById("imagen").value = imagen;
+        document.getElementById("categoria-producto").value = categoria;
+      }
+
+      window.eliminarProducto = async function(id) {
+        if (confirm("¿Eliminar este producto?")) {
+          await deleteDoc(doc(db, "productos", id));
+          alert("Producto eliminado.");
+          location.reload();
+        }
+      }
+
+      window.filtrarProductos = function () {
+        const filtro = document.getElementById("categoria").value;
+        document.querySelectorAll(".producto").forEach(p => {
+          p.style.display = (filtro === "todos" || p.classList.contains(filtro)) ? "block" : "none";
+        });
+      }
+
+      cargarProductos();
+    });
+  </script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #0e0e0e; color: #fff; }
+    header { background: #151515; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+    .header-left { text-align: center; flex: 1; }
+    .header-left h1 { margin: 0; color: #00aaff; }
+    .header-left p { color: #ccc; margin: 5px 0 0; }
+    .logo { max-height: 60px; }
+    #admin-btn { position: absolute; top: 10px; left: 10px; background: #444; color: white; border: none; border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 18px; }
+    nav { background: #121212; padding: 12px; text-align: center; }
+    nav select { padding: 10px; font-size: 16px; border-radius: 6px; background: #1a1a1a; color: #00aaff; border: none; }
+    .catalogo { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; padding: 40px 30px; }
+    .producto { background: #1a1a1a; border-radius: 12px; padding: 20px; text-align: center; }
+    .producto img { max-width: 100%; border-radius: 8px; }
+    .producto h2 { color: #00aaff; margin-top: 15px; }
+    .producto p { color: #ccc; }
+    .whatsapp-btn { display: inline-block; margin-top: 12px; padding: 10px 22px; background: #25D366; color: white; border-radius: 6px; text-decoration: none; }
+    .formulario { display: none; max-width: 400px; margin: 30px auto; background: #1f1f1f; padding: 20px; border-radius: 10px; }
+    .formulario input, .formulario select { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: none; background: #2a2a2a; color: white; }
+    .formulario button { width: 100%; padding: 10px; background: #00aaff; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; }
+    footer { background: #151515; padding: 20px; text-align: center; color: #888; }
+    .mensaje { text-align: center; color: #888; font-style: italic; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <header>
+    <button id="admin-btn">🔧</button>
+    <div class="header-left">
+      <h1>COMPRAS DONDE ALEJO</h1>
+      <p>¡Bienvenido a tu tienda confiable de productos variados!</p>
+    </div>
+    <img src="logo-alejo.png" alt="Logo" class="logo">
+  </header>
+<div class="formulario">
+    <form id="add-product-form">
+      <input type="hidden" id="edit-id">
+      <input type="text" id="nombre" placeholder="Nombre del producto" required>
+      <input type="text" id="descripcion" placeholder="Descripción" required>
+      <input type="text" id="imagen" placeholder="URL de la imagen" required>
+      <select id="categoria-producto" required>
+        <option value="">Selecciona una categoría</option>
+        <option value="tecnologia">Tecnología</option>
+        <option value="accesorios">Accesorios</option>
+        <option value="hogar">Hogar</option>
+        <option value="jugueteria">Juguetería</option>
+        <option value="belleza">Belleza</option>
+        <option value="salud">Salud</option>
+        <option value="mascotas">Mascotas</option>
+        <option value="cuidado-personal">Cuidado personal</option>
+      </select>
+      <button type="submit">Guardar producto</button>
+    </form>
+  </div>
+
+  <nav>
+    <label for="categoria">Filtrar por categoría:</label>
+    <select id="categoria" onchange="filtrarProductos()">
+      <option value="todos">Mostrar todos</option>
+      <option value="tecnologia">Tecnología</option>
+      <option value="accesorios">Accesorios</option>
+      <option value="hogar">Hogar</option>
+      <option value="jugueteria">Juguetería</option>
+      <option value="belleza">Belleza</option>
+      <option value="salud">Salud</option>
+      <option value="mascotas">Mascotas</option>
+      <option value="cuidado-personal">Cuidado personal</option>
+    </select>
+  </nav>
+
+  <section class="catalogo"></section>
+  <section style="background-color:#111; padding:40px 20px; text-align:center;">
+    <h2 style="color:#00aaff; font-size:22px; margin-bottom:20px;">Contáctanos</h2>
+    <p style="color:#ccc; font-size:16px;">📱 <strong>300 814 8195</strong></p>
+    <p style="color:#ccc; font-size:16px;">✉️ <strong>comprasdondealejo@gmail.com</strong></p>
+    <p style="color:#ccc; font-size:16px;">🕐 <strong>Horario: 08:00 a.m. - 05:00 p.m.</strong></p>
+    <div style="margin-top:25px;">
+      <a href="https://wa.me/573008148195" target="_blank" style="margin:0 10px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" width="32">
+      </a>
+      <a href="https://instagram.com/" target="_blank" style="margin:0 10px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" width="32">
+      </a>
+      <a href="https://facebook.com/" target="_blank" style="margin:0 10px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" width="32">
+      </a>
+      <a href="https://tiktok.com/" target="_blank" style="margin:0 10px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" width="32">
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 COMPRAS DONDE ALEJO - Todos los derechos reservados.
+  </footer>
+</body>
 </html>
