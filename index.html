@@ -45,6 +45,19 @@
       height: 50px;
     }
 
+    .telegram {
+      position: absolute;
+      left: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2em;
+    }
+
+    .telegram a {
+      color: #00d9ff;
+      text-decoration: none;
+    }
+
     .admin-btn {
       position: fixed;
       top: 10px;
@@ -95,7 +108,7 @@
       text-align: center;
     }
 
-    .btn-editar, .btn-eliminar {
+    .btn-editar, .btn-eliminar, .btn-wsp {
       background-color: #00d9ff;
       color: black;
       padding: 5px 10px;
@@ -103,6 +116,19 @@
       border-radius: 5px;
       cursor: pointer;
       margin: 2px;
+    }
+
+    footer {
+      background-color: #222;
+      padding: 20px;
+      text-align: center;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+
+    footer a {
+      color: #00d9ff;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -113,6 +139,9 @@
 
 <!-- ENCABEZADO -->
 <header class="header">
+  <div class="telegram">
+    <a href="https://t.me/comprasdondealejo" target="_blank">📢 Telegram</a>
+  </div>
   <div class="header-texto">
     <h1>COMPRAS DONDE ALEJO</h1>
     <p>¡Bienvenido a tu tienda de confianza!</p>
@@ -148,100 +177,117 @@
 
 <!-- CATÁLOGO -->
 <section class="catalogo" id="catalogo"></section>
+<!-- PIE DE PÁGINA -->
+<footer>
+  <p>© 2025 Compras Donde Alejo</p>
+  <p>Contacto: <a href="https://wa.me/573115750320" target="_blank">WhatsApp</a> | 
+     <a href="https://t.me/comprasdondealejo" target="_blank">Telegram</a>
+  </p>
+</footer>
 
-<!-- FIREBASE + LÓGICA -->
+<!-- FIREBASE + SCRIPT -->
 <script type="module">
-  // Tu configuración de Firebase real
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyB2-vc8ZKxaAEGe7kKTbHx7uRknLgA43j8",
-    authDomain: "compras-donde-alejo.firebaseapp.com",
-    projectId: "compras-donde-alejo",
-    storageBucket: "compras-donde-alejo.appspot.com",
-    messagingSenderId: "701460591911",
-    appId: "1:701460591911:web:4149c05c49cb2c12c254f1"
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_STORAGE_BUCKET",
+    messagingSenderId: "TU_SENDER_ID",
+    appId: "TU_APP_ID"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const productosRef = collection(db, "productos");
 
-  const catalogo = document.getElementById("catalogo");
+  let productos = [];
 
   async function cargarProductos() {
-    catalogo.innerHTML = "";
-    const querySnapshot = await getDocs(collection(db, "productos"));
-    querySnapshot.forEach((docu) => {
-      const prod = docu.data();
-      catalogo.innerHTML += `
-        <div class="product" data-cat="${prod.categoria}">
-          <img src="${prod.imagen}" alt="${prod.nombre}" />
-          <h4>${prod.nombre}</h4>
-          <p>$${prod.precio}</p>
-          <button class="btn-editar" onclick="editarProducto('${docu.id}', '${prod.nombre}', '${prod.categoria}', ${prod.precio}, '${prod.imagen}')">Editar</button>
-          <button class="btn-eliminar" onclick="eliminarProducto('${docu.id}')">Eliminar</button>
-        </div>
+    const res = await getDocs(productosRef);
+    productos = res.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    mostrarProductos(productos);
+  }
+
+  function mostrarProductos(lista) {
+    const contenedor = document.getElementById("catalogo");
+    contenedor.innerHTML = "";
+    lista.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "product";
+      card.innerHTML = `
+        <img src="${p.imagen}" alt="${p.nombre}" />
+        <h3>${p.nombre}</h3>
+        <p><strong>Categoría:</strong> ${p.categoria}</p>
+        <p><strong>Precio:</strong> $${p.precio}</p>
+        <button class="btn-wsp" onclick="comprarPorWhatsApp('${p.nombre}')">💬 Comprar</button>
+        <button class="btn-editar" onclick="editarProducto('${p.id}')">✏️</button>
+        <button class="btn-eliminar" onclick="eliminarProducto('${p.id}')">🗑️</button>
       `;
+      contenedor.appendChild(card);
     });
   }
 
-  async function guardarProducto() {
-    const nombre = document.getElementById("nombre").value;
-    const categoria = document.getElementById("categoria").value;
-    const precio = parseFloat(document.getElementById("precio").value);
-    const imagen = document.getElementById("imagen").value;
-    await addDoc(collection(db, "productos"), { nombre, categoria, precio, imagen });
-    cargarProductos();
-  }
+  window.filtrarCategoria = function(categoria) {
+    if (categoria === "todas") {
+      mostrarProductos(productos);
+    } else {
+      const filtrados = productos.filter(p => p.categoria.toLowerCase() === categoria.toLowerCase());
+      mostrarProductos(filtrados);
+    }
+  };
 
-  async function eliminarProducto(id) {
-    await deleteDoc(doc(db, "productos", id));
-    cargarProductos();
-  }
+  window.comprarPorWhatsApp = function(nombre) {
+    const mensaje = `Hola, estoy interesado en este producto: ${nombre}`;
+    const url = `https://wa.me/573115750320?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, "_blank");
+  };
 
-  window.editarProducto = async function(id, nombre, categoria, precio, imagen) {
-    document.getElementById("nombre").value = nombre;
-    document.getElementById("categoria").value = categoria;
-    document.getElementById("precio").value = precio;
-    document.getElementById("imagen").value = imagen;
-    document.getElementById("admin-panel").scrollIntoView();
-    window.guardarProducto = async function() {
-      const nuevoNombre = document.getElementById("nombre").value;
-      const nuevaCategoria = document.getElementById("categoria").value;
-      const nuevoPrecio = parseFloat(document.getElementById("precio").value);
-      const nuevaImagen = document.getElementById("imagen").value;
-      await updateDoc(doc(db, "productos", id), {
-        nombre: nuevoNombre,
-        categoria: nuevaCategoria,
-        precio: nuevoPrecio,
-        imagen: nuevaImagen
-      });
+  window.guardarProducto = async function() {
+    const nombre = document.getElementById("nombre").value.trim();
+    const categoria = document.getElementById("categoria").value.trim();
+    const precio = parseFloat(document.getElementById("precio").value.trim());
+    const imagen = document.getElementById("imagen").value.trim();
+    if (!nombre || !categoria || !imagen || isNaN(precio)) return alert("Completa todos los campos correctamente.");
+    await addDoc(productosRef, { nombre, categoria, precio, imagen });
+    cargarProductos();
+  };
+
+  window.eliminarProducto = async function(id) {
+    if (confirm("¿Seguro que deseas eliminar este producto?")) {
+      await deleteDoc(doc(productosRef, id));
       cargarProductos();
     }
-  }
+  };
 
-  function filtrarCategoria(cat) {
-    const productos = document.querySelectorAll(".product");
-    productos.forEach(p => {
-      p.style.display = (cat === "todas" || p.dataset.cat === cat) ? "inline-block" : "none";
+  window.editarProducto = async function(id) {
+    const nuevoNombre = prompt("Nuevo nombre:");
+    const nuevoCategoria = prompt("Nueva categoría:");
+    const nuevoPrecio = parseFloat(prompt("Nuevo precio:"));
+    const nuevaImagen = prompt("Nueva URL de imagen:");
+    if (!nuevoNombre || !nuevoCategoria || isNaN(nuevoPrecio) || !nuevaImagen) return alert("Datos inválidos");
+    await updateDoc(doc(productosRef, id), {
+      nombre: nuevoNombre,
+      categoria: nuevoCategoria,
+      precio: nuevoPrecio,
+      imagen: nuevaImagen
     });
-  }
+    cargarProductos();
+  };
 
-  window.eliminarProducto = eliminarProducto;
-  cargarProductos();
-</script>
-
-<script>
-  function mostrarAdmin() {
-    const clave = prompt("Ingrese la clave secreta:");
+  window.mostrarAdmin = function() {
+    const clave = prompt("Ingrese la clave:");
     if (clave === "1234") {
       document.getElementById("admin-panel").style.display = "block";
     } else {
       alert("Clave incorrecta");
     }
-  }
-</script>
+  };
 
+  cargarProductos();
+</script>
 </body>
 </html>
+  
