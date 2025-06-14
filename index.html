@@ -1,63 +1,121 @@
 <!DOCTYPE html><html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>COMPRAS DONDE ALEJO</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" href="logo-alejo.png">
+  <script type="module" src="app.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #fff;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: #1f1f1f;
+    }
+    .titulo-principal {
+      text-align: center;
+    }
+    .logo {
+      height: 60px;
+    }
+    .clave-form {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 999;
+    }
+    .catalogo {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .producto {
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      padding: 1rem;
+      width: 250px;
+      box-shadow: 0 0 10px #00000050;
+      text-align: center;
+    }
+    .producto img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    footer {
+      background-color: #1f1f1f;
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 3rem;
+    }
+    .redes-sociales i {
+      font-size: 1.8rem;
+      margin: 0 1rem;
+      color: #00aaff;
+    }
+    @media(max-width: 600px) {
+      header {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <header>
-    <div class="titulo">
+    <div class="clave-form">
+      <button onclick="pedirClave()">
+        <i class="fas fa-wrench"></i>
+      </button>
+    </div>
+    <div class="titulo-principal">
       <h1>COMPRAS DONDE ALEJO</h1>
-      <p>¡Bienvenido a tu tienda de confianza!</p>
+      <p>Bienvenido al mejor catálogo virtual</p>
     </div>
-    <div class="logo">
-      <img src="logo-alejo.png" alt="Logo">
-    </div>
-    <button id="admin-btn">🔧</button>
-  </header>  <div id="clave-container" class="modal">
-    <div class="modal-content">
-      <p>Ingrese la clave para acceder a administración:</p>
-      <input type="password" id="clave-input">
-      <button onclick="verificarClave()">Ingresar</button>
-    </div>
-  </div>  <div id="admin-panel" style="display:none">
-    <form id="formulario-agregar">
-      <h2>Agregar Producto</h2>
-      <label>Nombre:</label><input type="text" id="nombre">
-      <label>Categoría:</label><input type="text" id="categoria">
-      <label>Precio:</label><input type="number" id="precio">
-      <label>Imagen (URL):</label><input type="text" id="imagen">
-      <button type="submit">Agregar</button>
-    </form>
-    <form id="formulario-editar" style="display:none">
-      <h2>Editar Producto</h2>
-      <input type="hidden" id="editar-id">
-      <label>Nombre:</label><input type="text" id="editar-nombre">
-      <label>Categoría:</label><input type="text" id="editar-categoria">
-      <label>Precio:</label><input type="number" id="editar-precio">
-      <label>Imagen (URL):</label><input type="text" id="editar-imagen">
-      <button type="submit">Guardar Cambios</button>
-    </form>
-  </div>  <div id="filtros">
-    <select id="categoria-filtro">
+    <img src="logo-alejo.png" alt="Logo" class="logo" />
+  </header>  <section id="filtros" style="text-align:center; margin: 1rem;">
+    <select id="categoriaFiltro">
       <option value="">Todas las categorías</option>
     </select>
-    <button id="refrescar-btn">🔄 Refrescar</button>
-  </div>  <main>
-    <div id="catalogo" class="catalogo"></div>
-  </main>  <footer>
-    <h3>Contáctanos y síguenos en redes sociales</h3>
+    <button onclick="refrescarProductos()">🔄</button>
+  </section>  <section id="catalogo" class="catalogo"></section>  <section id="formularioProducto" style="display:none; text-align:center; margin: 2rem;">
+    <h2>Agregar / Editar Producto</h2>
+    <input type="hidden" id="idProducto" />
+    <input type="text" id="nombre" placeholder="Nombre del producto"><br><br>
+    <input type="text" id="categoria" placeholder="Categoría"><br><br>
+    <input type="number" id="precio" placeholder="Precio"><br><br>
+    <input type="url" id="imagen" placeholder="URL de imagen"><br><br>
+    <button onclick="guardarProducto()">Guardar</button>
+    <button onclick="cancelarEdicion()">Cancelar</button>
+  </section>  <footer>
+    <h3>Contáctanos</h3>
     <div class="redes-sociales">
-      <a href="https://facebook.com" target="_blank"><img src="img/facebook.png">Facebook</a>
-      <a href="https://instagram.com" target="_blank"><img src="img/instagram.png">Instagram</a>
-      <a href="https://tiktok.com" target="_blank"><img src="img/tiktok.png">TikTok</a>
-      <a href="https://wa.me/573115750320" target="_blank"><img src="img/whatsapp.png">WhatsApp</a>
-      <a href="https://t.me/comprasdondealejo" target="_blank"><img src="img/telegram.png">Telegram</a>
+      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://tiktok.com" target="_blank"><i class="fab fa-tiktok"></i></a>
+      <a href="https://wa.me/573115750320" target="_blank"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://t.me/comprasdondealejo" target="_blank"><i class="fab fa-telegram"></i></a>
     </div>
-    <div class="creditos">
-      <p>&copy; 2025 COMPRAS DONDE ALEJO. Todos los derechos reservados.</p>
-    </div>
-  </footer>  <script type="module" src="app.js"></script></body>
+    <p>&copy; 2025 COMPRAS DONDE ALEJO</p>
+  </footer>  <script>
+    function pedirClave() {
+      const clave = prompt("Ingrese la clave de administrador:");
+      if (clave === "Alejo123") {
+        document.getElementById("formularioProducto").style.display = "block";
+      } else {
+        alert("Clave incorrecta");
+      }
+    }
+  </script></body>
 </html>
