@@ -6,420 +6,242 @@
   <title>COMPRAS DONDE ALEJO</title>
   <style>
     body {
+      margin: 0;
+      font-family: Arial, sans-serif;
       background-color: #111;
       color: white;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
     }
-    header {
-      text-align: center;
+
+    .header {
       background-color: #222;
       padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       position: relative;
     }
-    header img {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 60px;
-    }
-    h1 {
-      color: #00bfff;
-      margin: 0;
-    }
-    p {
-      margin: 5px 0 0;
-    }
-    #catalogo {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-      padding: 20px;
-    }
-    .producto {
-      background-color: #222;
-      border-radius: 10px;
-      padding: 10px;
+
+    .header-texto {
       text-align: center;
-      box-shadow: 0 0 5px #000;
     }
-    .producto img {
-      max-width: 100%;
-      border-radius: 5px;
-    }
-    .producto h3 {
-      margin: 10px 0 5px;
-    }
-    .producto p {
+
+    .header-texto h1 {
       margin: 0;
+      font-size: 2em;
+      color: #00d9ff;
     }
-    .boton-wsp {
-      background-color: #25D366;
-      color: white;
-      padding: 6px 10px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 5px;
-      text-decoration: none;
-      display: inline-block;
+
+    .header-texto p {
+      margin: 5px 0 0;
+      font-size: 1em;
+      color: #eee;
     }
-    #admin-btn {
+
+    .logo {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 50px;
+    }
+
+    .admin-btn {
       position: fixed;
       top: 10px;
       left: 10px;
+      font-size: 20px;
       background: none;
       border: none;
-      font-size: 24px;
-      color: white;
+      color: #00d9ff;
       cursor: pointer;
     }
+
     #admin-panel {
       display: none;
-      background-color: #333;
+      background-color: #222;
       padding: 20px;
-      position: fixed;
-      top: 50px;
-      left: 10px;
-      width: 300px;
+      margin: 20px;
       border-radius: 10px;
-      z-index: 1000;
     }
-    label, input, select {
-      display: block;
-      margin: 5px 0;
-      width: 100%;
-    }
-    button {
-      margin-top: 10px;
+
+    input, select {
+      margin: 5px;
       padding: 8px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .product {
+      background: #222;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      display: inline-block;
+      width: 200px;
+      vertical-align: top;
+    }
+
+    .product img {
+      width: 100%;
+      border-radius: 5px;
+    }
+
+    .catalogo {
+      padding: 20px;
+    }
+
+    .filter {
+      margin: 20px;
+      text-align: center;
+    }
+
+    .btn-editar, .btn-eliminar {
+      background-color: #00d9ff;
+      color: black;
+      padding: 5px 10px;
       border: none;
       border-radius: 5px;
-      background-color: #00bfff;
-      color: white;
       cursor: pointer;
+      margin: 2px;
     }
   </style>
 </head>
 <body>
-  <header>
+
+<!-- BOTÓN ADMIN -->
+<button class="admin-btn" onclick="mostrarAdmin()">🔧</button>
+
+<!-- ENCABEZADO -->
+<header class="header">
+  <div class="header-texto">
     <h1>COMPRAS DONDE ALEJO</h1>
     <p>¡Bienvenido a tu tienda de confianza!</p>
-    <img src="logo.png" alt="Logo">
-    <button id="admin-btn">🔧</button>
-  </header>
-
-  <div id="admin-panel">
-    <form id="formulario">
-      <label for="nombre">Nombre del producto:</label>
-      <input type="text" id="nombre" required>
-
-      <label for="precio">Precio:</label>
-      <input type="text" id="precio" required>
-
-      <label for="categoria">Categoría:</label>
-      <select id="categoria" required>
-        <option value="">Selecciona</option>
-        <option value="tecnologia">Tecnología</option>
-        <option value="hogar">Hogar</option>
-        <option value="jugueteria">Juguetería</option>
-        <option value="salud">Salud</option>
-        <option value="accesorios">Accesorios</option>
-        <option value="belleza">Belleza</option>
-        <option value="mascotas">Mascotas</option>
-        <option value="personal">Cuidado personal</option>
-      </select>
-
-      <label for="imagen">URL de imagen:</label>
-      <input type="url" id="imagen" required>
-
-      <button type="submit">Guardar producto</button>
-    </form>
   </div>
+  <img src="logo.png" alt="Logo" class="logo" />
+</header>
 
-  <main>
-    <div id="catalogo"></div>
-  </main>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+<!-- PANEL ADMIN -->
+<div id="admin-panel">
+  <h2>Agregar producto</h2>
+  <input type="text" id="nombre" placeholder="Nombre" />
+  <input type="text" id="categoria" placeholder="Categoría" />
+  <input type="number" id="precio" placeholder="Precio" />
+  <input type="text" id="imagen" placeholder="URL Imagen" />
+  <button onclick="guardarProducto()">Guardar</button>
+</div>
 
-    // 🔧 Reemplaza esto con tu configuración real de Firebase
-    const firebaseConfig = {
-      apiKey: "TU_API_KEY",
-      authDomain: "TU_DOMINIO.firebaseapp.com",
-      databaseURL: "https://TU_DOMINIO.firebaseio.com",
-      projectId: "TU_PROJECT_ID",
-      storageBucket: "TU_DOMINIO.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abc123"
-    };
+<!-- FILTRO -->
+<div class="filter">
+  <label>Filtrar por categoría:</label>
+  <select onchange="filtrarCategoria(this.value)">
+    <option value="todas">Todas</option>
+    <option value="tecnologia">Tecnología</option>
+    <option value="accesorios">Accesorios</option>
+    <option value="hogar">Hogar</option>
+    <option value="juguetería">Juguetería</option>
+    <option value="salud">Salud</option>
+    <option value="belleza">Belleza</option>
+    <option value="mascotas">Mascotas</option>
+    <option value="cuidado personal">Cuidado Personal</option>
+  </select>
+</div>
 
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    const productosRef = ref(database, 'productos');
+<!-- CATÁLOGO -->
+<section class="catalogo" id="catalogo"></section>
 
-    const catalogoDiv = document.getElementById("catalogo");
+<!-- FIREBASE + LÓGICA -->
+<script type="module">
+  // Tu configuración de Firebase real
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // 🛒 Mostrar productos en la tienda
-    onValue(productosRef, (snapshot) => {
-      catalogoDiv.innerHTML = "";
-      snapshot.forEach((childSnapshot) => {
-        const producto = childSnapshot.val();
-        const div = document.createElement("div");
-        div.className = "producto";
-        div.innerHTML = `
-          <img src="${producto.imagen}" alt="${producto.nombre}">
-          <h3>${producto.nombre}</h3>
-          <p>$${producto.precio}</p>
-          <a class="boton-wsp" target="_blank" href="https://wa.me/573115750320?text=Hola!%20Me%20interesa%20el%20producto:%20${encodeURIComponent(producto.nombre)}">Comprar</a>
-        `;
-        catalogoDiv.appendChild(div);
+  const firebaseConfig = {
+    apiKey: "AIzaSyB2-vc8ZKxaAEGe7kKTbHx7uRknLgA43j8",
+    authDomain: "compras-donde-alejo.firebaseapp.com",
+    projectId: "compras-donde-alejo",
+    storageBucket: "compras-donde-alejo.appspot.com",
+    messagingSenderId: "701460591911",
+    appId: "1:701460591911:web:4149c05c49cb2c12c254f1"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const catalogo = document.getElementById("catalogo");
+
+  async function cargarProductos() {
+    catalogo.innerHTML = "";
+    const querySnapshot = await getDocs(collection(db, "productos"));
+    querySnapshot.forEach((docu) => {
+      const prod = docu.data();
+      catalogo.innerHTML += `
+        <div class="product" data-cat="${prod.categoria}">
+          <img src="${prod.imagen}" alt="${prod.nombre}" />
+          <h4>${prod.nombre}</h4>
+          <p>$${prod.precio}</p>
+          <button class="btn-editar" onclick="editarProducto('${docu.id}', '${prod.nombre}', '${prod.categoria}', ${prod.precio}, '${prod.imagen}')">Editar</button>
+          <button class="btn-eliminar" onclick="eliminarProducto('${docu.id}')">Eliminar</button>
+        </div>
+      `;
+    });
+  }
+
+  async function guardarProducto() {
+    const nombre = document.getElementById("nombre").value;
+    const categoria = document.getElementById("categoria").value;
+    const precio = parseFloat(document.getElementById("precio").value);
+    const imagen = document.getElementById("imagen").value;
+    await addDoc(collection(db, "productos"), { nombre, categoria, precio, imagen });
+    cargarProductos();
+  }
+
+  async function eliminarProducto(id) {
+    await deleteDoc(doc(db, "productos", id));
+    cargarProductos();
+  }
+
+  window.editarProducto = async function(id, nombre, categoria, precio, imagen) {
+    document.getElementById("nombre").value = nombre;
+    document.getElementById("categoria").value = categoria;
+    document.getElementById("precio").value = precio;
+    document.getElementById("imagen").value = imagen;
+    document.getElementById("admin-panel").scrollIntoView();
+    window.guardarProducto = async function() {
+      const nuevoNombre = document.getElementById("nombre").value;
+      const nuevaCategoria = document.getElementById("categoria").value;
+      const nuevoPrecio = parseFloat(document.getElementById("precio").value);
+      const nuevaImagen = document.getElementById("imagen").value;
+      await updateDoc(doc(db, "productos", id), {
+        nombre: nuevoNombre,
+        categoria: nuevaCategoria,
+        precio: nuevoPrecio,
+        imagen: nuevaImagen
       });
+      cargarProductos();
+    }
+  }
+
+  function filtrarCategoria(cat) {
+    const productos = document.querySelectorAll(".product");
+    productos.forEach(p => {
+      p.style.display = (cat === "todas" || p.dataset.cat === cat) ? "inline-block" : "none";
     });
+  }
 
-    // 🔒 Panel de administración con clave Alejo1997
-    const adminBtn = document.getElementById("admin-btn");
-    const adminPanel = document.getElementById("admin-panel");
+  window.eliminarProducto = eliminarProducto;
+  cargarProductos();
+</script>
 
-    adminBtn.addEventListener("click", () => {
-      const clave = prompt("Ingresa la clave secreta:");
-      if (clave === "Alejo1997") {
-        adminPanel.style.display = "block";
-      } else {
-        alert("Clave incorrecta.");
-      }
-    });
-
-    // 📤 Guardar nuevo producto en Firebase
-    const form = document.getElementById("formulario");
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const nombre = document.getElementById("nombre").value;
-      const precio = document.getElementById("precio").value;
-      const categoria = document.getElementById("categoria").value;
-      const imagen = document.getElementById("imagen").value;
-
-      const producto = { nombre, precio, categoria, imagen };
-      push(productosRef, producto);
-
-      alert("Producto guardado correctamente");
-      form.reset();
-    });
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>COMPRAS DONDE ALEJO</title>
-  <style>
-    body {
-      background-color: #111;
-      color: white;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
+<script>
+  function mostrarAdmin() {
+    const clave = prompt("Ingrese la clave secreta:");
+    if (clave === "1234") {
+      document.getElementById("admin-panel").style.display = "block";
+    } else {
+      alert("Clave incorrecta");
     }
-    header {
-      text-align: center;
-      background-color: #222;
-      padding: 20px;
-      position: relative;
-    }
-    header img {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 60px;
-    }
-    h1 {
-      color: #00bfff;
-      margin: 0;
-    }
-    p {
-      margin: 5px 0 0;
-    }
-    #catalogo {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-      padding: 20px;
-    }
-    .producto {
-      background-color: #222;
-      border-radius: 10px;
-      padding: 10px;
-      text-align: center;
-      box-shadow: 0 0 5px #000;
-    }
-    .producto img {
-      max-width: 100%;
-      border-radius: 5px;
-    }
-    .producto h3 {
-      margin: 10px 0 5px;
-    }
-    .producto p {
-      margin: 0;
-    }
-    .boton-wsp {
-      background-color: #25D366;
-      color: white;
-      padding: 6px 10px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 5px;
-      text-decoration: none;
-      display: inline-block;
-    }
-    #admin-btn {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: none;
-      border: none;
-      font-size: 24px;
-      color: white;
-      cursor: pointer;
-    }
-    #admin-panel {
-      display: none;
-      background-color: #333;
-      padding: 20px;
-      position: fixed;
-      top: 50px;
-      left: 10px;
-      width: 300px;
-      border-radius: 10px;
-      z-index: 1000;
-    }
-    label, input, select {
-      display: block;
-      margin: 5px 0;
-      width: 100%;
-    }
-    button {
-      margin-top: 10px;
-      padding: 8px;
-      border: none;
-      border-radius: 5px;
-      background-color: #00bfff;
-      color: white;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>COMPRAS DONDE ALEJO</h1>
-    <p>¡Bienvenido a tu tienda de confianza!</p>
-    <img src="logo.png" alt="Logo">
-    <button id="admin-btn">🔧</button>
-  </header>
+  }
+</script>
 
-  <div id="admin-panel">
-    <form id="formulario">
-      <label for="nombre">Nombre del producto:</label>
-      <input type="text" id="nombre" required>
-
-      <label for="precio">Precio:</label>
-      <input type="text" id="precio" required>
-
-      <label for="categoria">Categoría:</label>
-      <select id="categoria" required>
-        <option value="">Selecciona</option>
-        <option value="tecnologia">Tecnología</option>
-        <option value="hogar">Hogar</option>
-        <option value="jugueteria">Juguetería</option>
-        <option value="salud">Salud</option>
-        <option value="accesorios">Accesorios</option>
-        <option value="belleza">Belleza</option>
-        <option value="mascotas">Mascotas</option>
-        <option value="personal">Cuidado personal</option>
-      </select>
-
-      <label for="imagen">URL de imagen:</label>
-      <input type="url" id="imagen" required>
-
-      <button type="submit">Guardar producto</button>
-    </form>
-  </div>
-
-  <main>
-    <div id="catalogo"></div>
-  </main>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-    // 🔧 Reemplaza esto con tu configuración real de Firebase
-    const firebaseConfig = {
-      apiKey: "TU_API_KEY",
-      authDomain: "TU_DOMINIO.firebaseapp.com",
-      databaseURL: "https://TU_DOMINIO.firebaseio.com",
-      projectId: "TU_PROJECT_ID",
-      storageBucket: "TU_DOMINIO.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abc123"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    const productosRef = ref(database, 'productos');
-
-    const catalogoDiv = document.getElementById("catalogo");
-
-    // Mostrar productos
-    onValue(productosRef, (snapshot) => {
-      catalogoDiv.innerHTML = "";
-      snapshot.forEach((childSnapshot) => {
-        const producto = childSnapshot.val();
-        const div = document.createElement("div");
-        div.className = "producto";
-        div.innerHTML = `
-          <img src="${producto.imagen}" alt="${producto.nombre}">
-          <h3>${producto.nombre}</h3>
-          <p>$${producto.precio}</p>
-          <a class="boton-wsp" target="_blank" href="https://wa.me/573115750320?text=Hola!%20Me%20interesa%20el%20producto:%20${encodeURIComponent(producto.nombre)}">Comprar</a>
-        `;
-        catalogoDiv.appendChild(div);
-      });
-    });
-
-    // Panel con clave
-    const adminBtn = document.getElementById("admin-btn");
-    const adminPanel = document.getElementById("admin-panel");
-
-    adminBtn.addEventListener("click", () => {
-      const clave = prompt("Ingresa la clave secreta:");
-      if (clave === "Alejo1997") {
-        adminPanel.style.display = "block";
-      } else {
-        alert("Clave incorrecta.");
-      }
-    });
-
-    // Guardar nuevo producto
-    const form = document.getElementById("formulario");
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const nombre = document.getElementById("nombre").value;
-      const precio = document.getElementById("precio").value;
-      const categoria = document.getElementById("categoria").value;
-      const imagen = document.getElementById("imagen").value;
-
-      const producto = { nombre, precio, categoria, imagen };
-      push(productosRef, producto);
-
-      alert("Producto guardado correctamente");
-      form.reset();
-    });
-  </script>
 </body>
 </html>
