@@ -4,101 +4,141 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>COMPRAS DONDE ALEJO</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
       margin: 0;
       font-family: 'Roboto', sans-serif;
-      background-color: #111;
+      background-color: #121212;
       color: #fff;
     }
     header {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 20px;
-      background-color: #1a1a1a;
       flex-wrap: wrap;
-    }
-    .logo-container {
-      display: flex;
       align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background-color: #1e1e1e;
     }
-    .refresh-btn {
-      background-color: gray;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      margin-right: 10px;
-      border-radius: 5px;
-      cursor: pointer;
+    #logo {
+      height: 60px;
     }
-    .title-container {
+    h1 {
       text-align: center;
       flex: 1;
-    }
-    .title-container h1 {
-      margin: 0;
       font-size: 24px;
-      color: #00aaff;
     }
-    .title-container p {
-      margin: 0;
-      font-size: 14px;
-      color: #ccc;
+    #welcome {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 5px;
+      margin-bottom: 5px;
     }
-    .logo {
-      height: 50px;
-      margin-left: 10px;
-    }
-    .controls {
+    .admin-controls {
       display: flex;
       gap: 10px;
-      margin-top: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
+      align-items: center;
+      margin: 10px 20px;
     }
-    .gray-button {
-      background-color: gray;
+    .admin-controls button, select {
+      background-color: #333;
       color: white;
       border: none;
-      padding: 8px 14px;
-      border-radius: 5px;
+      padding: 6px 12px;
+      border-radius: 4px;
       cursor: pointer;
+    }
+    #products {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 20px;
+    }
+    .product {
+      background-color: #1e1e1e;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 10px;
+      width: 220px;
+      text-align: center;
+    }
+    .product img {
+      max-width: 100%;
+      border-radius: 6px;
+    }
+    .footer {
+      background-color: #1e1e1e;
+      padding: 20px;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 10px;
+    }
+    .social-icons a {
+      color: white;
+      font-size: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    .admin-form input, .admin-form select {
+      margin: 5px 0;
+      width: 100%;
+      padding: 5px;
+    }
+    .admin-form {
+      margin: 20px auto;
+      max-width: 400px;
+      padding: 10px;
+      background-color: #2a2a2a;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo-container">
-      <button id="refreshBtn" class="refresh-btn">🔁</button>
-      <img src="logo-alejo.png" alt="Logo" class="logo">
-    </div>
-    <div class="title-container">
-      <h1>COMPRAS DONDE ALEJO</h1>
-      <p>¡Bienvenido! Encuentra todo lo que necesitas.</p>
-    </div>
-    <div class="controls">
-      <button id="adminBtn" class="gray-button">🔧</button>
-      <select id="categoryFilter" class="gray-button">
-        <option value="todos">Todas las Categorías</option>
-        <!-- Aquí irán las categorías dinámicamente -->
-      </select>
-    </div>
+    <button id="refreshBtn" style="background-color: gray;">🔄</button>
+    <h1>COMPRAS DONDE ALEJO</h1>
+    <img id="logo" src="logo-alejo.png" alt="Logo Alejo">
   </header>
-  <main style="padding: 20px;">
-    <div id="productList" style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
-      <!-- Productos se cargarán aquí desde Firebase -->
-    </div>
-  </main>
+  <div id="welcome">¡Bienvenido a tu tienda de confianza!</div>
+  <div class="admin-controls">
+    <button id="adminBtn" style="background-color: gray;">🔧</button>
+    <select id="categoryFilter" style="background-color: gray;">
+      <option value="Todos">Categorías</option>
+      <option value="Tecnología">Tecnología</option>
+      <option value="Accesorios">Accesorios</option>
+      <option value="Hogar">Hogar</option>
+      <option value="Juguetería">Juguetería</option>
+      <option value="Salud">Salud</option>
+      <option value="Belleza">Belleza</option>
+      <option value="Mascotas">Mascotas</option>
+      <option value="Cuidado Personal">Cuidado Personal</option>
+    </select>
+  </div>
 
-  <!-- Firebase SDK -->
+  <div id="adminForm" class="admin-form hidden">
+    <h3>Agregar / Editar Producto</h3>
+    <input type="text" id="nombre" placeholder="Nombre del producto" />
+    <input type="text" id="categoria" placeholder="Categoría" />
+    <input type="text" id="precio" placeholder="Precio" />
+    <input type="text" id="imagen" placeholder="URL de la imagen" />
+    <input type="hidden" id="editId" />
+    <button onclick="guardarProducto()">Guardar Producto</button>
+  </div>
+
+  <div id="products"></div>
   <script type="module">
-    // Importar Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import {
-      getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc
+      getFirestore, collection, getDocs, addDoc,
+      deleteDoc, doc, updateDoc
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -112,279 +152,204 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const productosRef = collection(db, "productos");
 
-    const productList = document.getElementById("productList");
-    const categoryFilter = document.getElementById("categoryFilter");
-    const refreshBtn = document.getElementById("refreshBtn");
-
-    let allProducts = [];
-
-    async function loadProducts() {
-      const querySnapshot = await getDocs(collection(db, "productos"));
-      productList.innerHTML = "";
-      allProducts = [];
-      let categories = new Set();
-
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const id = docSnap.id;
-        allProducts.push({ id, ...data });
-        categories.add(data.categoria);
-
-        const productCard = createProductCard({ id, ...data });
-        productList.appendChild(productCard);
-      });
-
-      // Actualizar categorías
-      categoryFilter.innerHTML = `<option value="todos">Todas las Categorías</option>`;
-      [...categories].sort().forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat;
-        option.textContent = cat;
-        categoryFilter.appendChild(option);
-      });
-    }
-
-    function createProductCard(product) {
-      const div = document.createElement("div");
-      div.style.background = "#222";
-      div.style.borderRadius = "10px";
-      div.style.padding = "10px";
-      div.style.textAlign = "center";
-      div.innerHTML = `
-        <img src="${product.imagen}" alt="${product.nombre}" style="width:100%; height:150px; object-fit:cover; border-radius: 8px;" />
-        <h3 style="margin:10px 0; font-size:18px;">${product.nombre}</h3>
-        <p style="color:#0af;">${product.categoria}</p>
-        <p style="font-weight:bold;">$${product.precio}</p>
-        <a href="https://wa.me/573115750320?text=Hola%20quiero%20comprar:%20${encodeURIComponent(product.nombre)}" target="_blank" class="gray-button" style="display:block; margin-top:10px;">Comprar por WhatsApp</a>
-        <div class="admin-controls" style="margin-top:10px; display:none;">
-          <button onclick="editProduct('${product.id}')" class="gray-button">✏️ Editar</button>
-          <button onclick="deleteProduct('${product.id}')" class="gray-button">🗑️ Eliminar</button>
-        </div>
-      `;
-      return div;
-    }
-
-    categoryFilter.addEventListener("change", () => {
-      const value = categoryFilter.value;
-      productList.innerHTML = "";
-      const filtered = value === "todos" ? allProducts : allProducts.filter(p => p.categoria === value);
-      filtered.forEach(prod => {
-        const card = createProductCard(prod);
-        productList.appendChild(card);
-      });
-    });
-
-    refreshBtn.addEventListener("click", () => {
-      loadProducts();
-    });
-
-    // Cargar productos inicialmente
-    loadProducts();
-  </script>
-  <main style="padding: 20px;">
-    <div id="productList" style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
-      <!-- Productos se cargarán aquí desde Firebase -->
-    </div>
-  </main>
-
-  <!-- Firebase SDK -->
-  <script type="module">
-    // Importar Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyEXAMPLE",
-      authDomain: "compras-donde-alejo.firebaseapp.com",
-      projectId: "compras-donde-alejo",
-      storageBucket: "compras-donde-alejo.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abc123"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const productList = document.getElementById("productList");
-    const categoryFilter = document.getElementById("categoryFilter");
-    const refreshBtn = document.getElementById("refreshBtn");
-
-    let allProducts = [];
-
-    async function loadProducts() {
-      const querySnapshot = await getDocs(collection(db, "productos"));
-      productList.innerHTML = "";
-      allProducts = [];
-      let categories = new Set();
-
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const id = docSnap.id;
-        allProducts.push({ id, ...data });
-        categories.add(data.categoria);
-
-        const productCard = createProductCard({ id, ...data });
-        productList.appendChild(productCard);
-      });
-
-      // Actualizar categorías
-      categoryFilter.innerHTML = `<option value="todos">Todas las Categorías</option>`;
-      [...categories].sort().forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat;
-        option.textContent = cat;
-        categoryFilter.appendChild(option);
-      });
-    }
-
-    function createProductCard(product) {
-      const div = document.createElement("div");
-      div.style.background = "#222";
-      div.style.borderRadius = "10px";
-      div.style.padding = "10px";
-      div.style.textAlign = "center";
-      div.innerHTML = `
-        <img src="${product.imagen}" alt="${product.nombre}" style="width:100%; height:150px; object-fit:cover; border-radius: 8px;" />
-        <h3 style="margin:10px 0; font-size:18px;">${product.nombre}</h3>
-        <p style="color:#0af;">${product.categoria}</p>
-        <p style="font-weight:bold;">$${product.precio}</p>
-        <a href="https://wa.me/573115750320?text=Hola%20quiero%20comprar:%20${encodeURIComponent(product.nombre)}" target="_blank" class="gray-button" style="display:block; margin-top:10px;">Comprar por WhatsApp</a>
-        <div class="admin-controls" style="margin-top:10px; display:none;">
-          <button onclick="editProduct('${product.id}')" class="gray-button">✏️ Editar</button>
-          <button onclick="deleteProduct('${product.id}')" class="gray-button">🗑️ Eliminar</button>
-        </div>
-      `;
-      return div;
-    }
-
-    categoryFilter.addEventListener("change", () => {
-      const value = categoryFilter.value;
-      productList.innerHTML = "";
-      const filtered = value === "todos" ? allProducts : allProducts.filter(p => p.categoria === value);
-      filtered.forEach(prod => {
-        const card = createProductCard(prod);
-        productList.appendChild(card);
-      });
-    });
-
-    refreshBtn.addEventListener("click", () => {
-      loadProducts();
-    });
-
-    // Cargar productos inicialmente
-    loadProducts();
-  </script>
-  <!-- Formulario oculto para agregar o editar productos -->
-  <section id="formSection" style="display: none; padding: 20px; background: #111; margin: 20px; border-radius: 10px;">
-    <h2 style="color: #0af;">Agregar o Editar Producto</h2>
-    <form id="productForm">
-      <input type="hidden" id="productoId" />
-      <input type="text" id="nombre" placeholder="Nombre del producto" required><br>
-      <input type="text" id="categoria" placeholder="Categoría" required><br>
-      <input type="number" id="precio" placeholder="Precio" required><br>
-      <input type="url" id="imagen" placeholder="URL de la imagen" required><br>
-      <button type="submit" class="gray-button">Guardar Producto</button>
-    </form>
-  </section>
-
-  <script type="module">
     const adminBtn = document.getElementById("adminBtn");
-    const formSection = document.getElementById("formSection");
-    const productForm = document.getElementById("productForm");
-    const productoId = document.getElementById("productoId");
-    const nombre = document.getElementById("nombre");
-    const categoria = document.getElementById("categoria");
-    const precio = document.getElementById("precio");
-    const imagen = document.getElementById("imagen");
+    const adminForm = document.getElementById("adminForm");
+    const editId = document.getElementById("editId");
 
     let isAdmin = false;
 
     adminBtn.addEventListener("click", () => {
-      const clave = prompt("Ingresa la clave secreta:");
+      const clave = prompt("Ingresa la clave:");
       if (clave === "Alejo123") {
         isAdmin = true;
-        formSection.style.display = "block";
-        document.querySelectorAll(".admin-controls").forEach(el => el.style.display = "block");
-        alert("Modo administrador activado.");
+        adminForm.classList.remove("hidden");
+        alert("Acceso concedido. Puedes agregar, editar y eliminar productos.");
       } else {
         alert("Clave incorrecta.");
       }
     });
 
-    productForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const data = {
-        nombre: nombre.value,
-        categoria: categoria.value,
-        precio: parseFloat(precio.value),
-        imagen: imagen.value
-      };
+    async function cargarProductos() {
+      const contenedor = document.getElementById("products");
+      contenedor.innerHTML = "";
+      const snapshot = await getDocs(productosRef);
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `
+          <img src="${data.imagen}" alt="${data.nombre}" />
+          <h2>${data.nombre}</h2>
+          <p>Categoría: ${data.categoria}</p>
+          <p>Precio: $${data.precio}</p>
+          <a href="https://wa.me/573115750320?text=Hola%20quiero%20comprar%20${encodeURIComponent(data.nombre)}" target="_blank">Comprar por WhatsApp</a>
+          ${isAdmin ? `
+            <button onclick="editarProducto('${docSnap.id}', '${data.nombre}', '${data.categoria}', '${data.precio}', '${data.imagen}')">Editar</button>
+            <button onclick="eliminarProducto('${docSnap.id}')">Eliminar</button>
+          ` : ""}
+        `;
+        contenedor.appendChild(div);
+      });
+    }
 
-      try {
-        if (productoId.value) {
-          // Editar producto
-          const ref = doc(db, "productos", productoId.value);
-          await updateDoc(ref, data);
-          alert("Producto actualizado.");
-        } else {
-          // Agregar producto nuevo
-          await addDoc(collection(db, "productos"), data);
-          alert("Producto agregado.");
-        }
-        productForm.reset();
-        productoId.value = "";
-        loadProducts();
-      } catch (err) {
-        alert("Error al guardar producto.");
+    cargarProductos();
+    async function eliminarProducto(id) {
+      if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+        await deleteDoc(doc(db, "productos", id));
+        cargarProductos();
       }
+    }
+
+    window.eliminarProducto = eliminarProducto;
+
+    window.editarProducto = (id, nombre, categoria, precio, imagen) => {
+      document.getElementById("nombre").value = nombre;
+      document.getElementById("categoria").value = categoria;
+      document.getElementById("precio").value = precio;
+      document.getElementById("imagen").value = imagen;
+      document.getElementById("editId").value = id;
+      adminForm.scrollIntoView({ behavior: "smooth" });
+    };
+
+    document.getElementById("productForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById("nombre").value;
+      const categoria = document.getElementById("categoria").value;
+      const precio = document.getElementById("precio").value;
+      const imagen = document.getElementById("imagen").value;
+      const id = document.getElementById("editId").value;
+
+      const producto = { nombre, categoria, precio, imagen };
+
+      if (id) {
+        await updateDoc(doc(db, "productos", id), producto);
+      } else {
+        await addDoc(productosRef, producto);
+      }
+
+      document.getElementById("productForm").reset();
+      document.getElementById("editId").value = "";
+      cargarProductos();
     });
 
-    window.editProduct = async (id) => {
-      const prod = allProducts.find(p => p.id === id);
-      if (!prod) return;
-      productoId.value = prod.id;
-      nombre.value = prod.nombre;
-      categoria.value = prod.categoria;
-      precio.value = prod.precio;
-      imagen.value = prod.imagen;
-      formSection.scrollIntoView({ behavior: "smooth" });
-    };
+    // Categorías
+    const categorias = [
+      "Tecnología", "Accesorios", "Hogar", "Juguetería",
+      "Salud", "Belleza", "Mascotas", "Cuidado Personal"
+    ];
 
-    window.deleteProduct = async (id) => {
-      const confirmDelete = confirm("¿Estás seguro de eliminar este producto?");
-      if (!confirmDelete) return;
-      try {
-        await deleteDoc(doc(db, "productos", id));
-        alert("Producto eliminado.");
-        loadProducts();
-      } catch (err) {
-        alert("Error al eliminar producto.");
-      }
-    };
+    const filtroSelect = document.getElementById("filtroCategoria");
+    categorias.forEach(cat => {
+      const opt = document.createElement("option");
+      opt.value = cat;
+      opt.textContent = cat;
+      filtroSelect.appendChild(opt);
+    });
+
+    filtroSelect.addEventListener("change", async () => {
+      const categoria = filtroSelect.value;
+      const contenedor = document.getElementById("products");
+      contenedor.innerHTML = "";
+      const snapshot = await getDocs(productosRef);
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (categoria === "" || data.categoria === categoria) {
+          const div = document.createElement("div");
+          div.className = "product";
+          div.innerHTML = `
+            <img src="${data.imagen}" alt="${data.nombre}" />
+            <h2>${data.nombre}</h2>
+            <p>Categoría: ${data.categoria}</p>
+            <p>Precio: $${data.precio}</p>
+            <a href="https://wa.me/573115750320?text=Hola%20quiero%20comprar%20${encodeURIComponent(data.nombre)}" target="_blank">Comprar por WhatsApp</a>
+            ${isAdmin ? `
+              <button onclick="editarProducto('${docSnap.id}', '${data.nombre}', '${data.categoria}', '${data.precio}', '${data.imagen}')">Editar</button>
+              <button onclick="eliminarProducto('${docSnap.id}')">Eliminar</button>
+            ` : ""}
+          `;
+          contenedor.appendChild(div);
+        }
+      });
+    });
+
+    // Botón refrescar
+    document.getElementById("refreshBtn").addEventListener("click", () => {
+      cargarProductos();
+    });
   </script>
- <footer style="background-color: #000; padding: 30px 10px; color: white; text-align: center; margin-top: 40px;">
-    <h3 style="margin-bottom: 10px;">Síguenos en nuestras redes sociales</h3>
-    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
-      <a href="https://facebook.com/comprasdondealejo" target="_blank" title="Facebook">
-        <img src="https://cdn-icons-png.flaticon.com/512/145/145802.png" width="35" alt="Facebook">
+<footer>
+    <div class="social-icons">
+      <a href="https://facebook.com" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="Facebook" />
       </a>
-      <a href="https://instagram.com/comprasdondealejo" target="_blank" title="Instagram">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" width="35" alt="Instagram">
+      <a href="https://instagram.com" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" />
       </a>
-      <a href="https://tiktok.com/@comprasdondealejo" target="_blank" title="TikTok">
-        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" width="35" alt="TikTok">
+      <a href="https://tiktok.com" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" alt="TikTok" />
       </a>
-      <a href="https://wa.me/573115750320" target="_blank" title="WhatsApp">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="35" alt="WhatsApp">
+      <a href="https://wa.me/573115750320" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" />
       </a>
-      <a href="https://t.me/comprasdondealejo" target="_blank" title="Telegram">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="35" alt="Telegram">
+      <a href="https://t.me/comprasdondealejo" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" />
       </a>
     </div>
-    <p style="font-size: 14px;">COMPRAS DONDE ALEJO © 2025 - Todos los derechos reservados</p>
+    <p>© 2025 COMPRAS DONDE ALEJO. Todos los derechos reservados.</p>
   </footer>
+
 </body>
 </html>
+<!-- Scripts para Firebase -->
+  <script type="module">
+    // Configura Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, addDoc,
+      deleteDoc, doc, updateDoc, onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyEXAMPLE",
+      authDomain: "compras-donde-alejo.firebaseapp.com",
+      projectId: "compras-donde-alejo",
+      storageBucket: "compras-donde-alejo.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abc123"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const productosRef = collection(db, "productos");
+
+    function cargarProductos() {
+      const contenedor = document.getElementById("productos");
+      contenedor.innerHTML = "";
+      getDocs(productosRef).then(snapshot => {
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
+            <img src="${data.imagen}" alt="${data.nombre}" />
+            <h3>${data.nombre}</h3>
+            <p>Categoría: ${data.categoria}</p>
+            <p>Precio: $${data.precio}</p>
+            <a href="https://wa.me/573115750320?text=Hola,%20quiero%20comprar%20${encodeURIComponent(data.nombre)}" target="_blank">Comprar por WhatsApp</a>
+          `;
+          contenedor.appendChild(card);
+        });
+      });
+    }
+
+    document.getElementById("refresh-button").addEventListener("click", cargarProductos);
+
+    window.addEventListener("load", () => {
+      cargarProductos();
+    });
+  </script>
+</html>
+
