@@ -1,121 +1,236 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>COMPRAS DONDE ALEJO</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="app.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
       background-color: #121212;
-      color: #fff;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
     }
     header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 1rem;
-      background-color: #1f1f1f;
+      justify-content: space-between;
+      padding: 20px;
+      border-bottom: 2px solid #333;
     }
-    .titulo-principal {
+    .title-group {
       text-align: center;
+      flex-grow: 1;
     }
-    .logo {
-      height: 60px;
-    }
-    .clave-form {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 999;
-    }
-    .catalogo {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      padding: 1rem;
-    }
-    .producto {
-      background-color: #1e1e1e;
-      border-radius: 10px;
-      padding: 1rem;
-      width: 250px;
-      box-shadow: 0 0 10px #00000050;
-      text-align: center;
-    }
-    .producto img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-    footer {
-      background-color: #1f1f1f;
-      text-align: center;
-      padding: 2rem 1rem;
-      margin-top: 3rem;
-    }
-    .redes-sociales i {
-      font-size: 1.8rem;
-      margin: 0 1rem;
+    .title-group h1 {
+      margin: 0;
+      font-size: 2.5rem;
       color: #00aaff;
     }
-    @media(max-width: 600px) {
-      header {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
+    .title-group p {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #ccc;
+    }
+    .logo {
+      width: 60px;
+      height: auto;
+    }
+    #adminBtn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: none;
+      border: none;
+      color: #00aaff;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    #adminPanel {
+      display: none;
+      padding: 20px;
+      background: #1e1e1e;
+      border-top: 1px solid #333;
     }
   </style>
 </head>
 <body>
+  <button id="adminBtn" title="Administrar"><i class="fas fa-wrench"></i></button>
+
   <header>
-    <div class="clave-form">
-      <button onclick="pedirClave()">
-        <i class="fas fa-wrench"></i>
-      </button>
-    </div>
-    <div class="titulo-principal">
+    <div class="title-group">
       <h1>COMPRAS DONDE ALEJO</h1>
-      <p>Bienvenido al mejor catálogo virtual</p>
+      <p>Bienvenidos a tu tienda de confianza</p>
     </div>
-    <img src="logo-alejo.png" alt="Logo" class="logo" />
-  </header>  <section id="filtros" style="text-align:center; margin: 1rem;">
-    <select id="categoriaFiltro">
-      <option value="">Todas las categorías</option>
-    </select>
-    <button onclick="refrescarProductos()">🔄</button>
-  </section>  <section id="catalogo" class="catalogo"></section>  <section id="formularioProducto" style="display:none; text-align:center; margin: 2rem;">
-    <h2>Agregar / Editar Producto</h2>
-    <input type="hidden" id="idProducto" />
-    <input type="text" id="nombre" placeholder="Nombre del producto"><br><br>
-    <input type="text" id="categoria" placeholder="Categoría"><br><br>
-    <input type="number" id="precio" placeholder="Precio"><br><br>
-    <input type="url" id="imagen" placeholder="URL de imagen"><br><br>
-    <button onclick="guardarProducto()">Guardar</button>
-    <button onclick="cancelarEdicion()">Cancelar</button>
-  </section>  <footer>
-    <h3>Contáctanos</h3>
-    <div class="redes-sociales">
-      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
-      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="https://tiktok.com" target="_blank"><i class="fab fa-tiktok"></i></a>
-      <a href="https://wa.me/573115750320" target="_blank"><i class="fab fa-whatsapp"></i></a>
-      <a href="https://t.me/comprasdondealejo" target="_blank"><i class="fab fa-telegram"></i></a>
+    <img src="logo-alejo.png" alt="Logo" class="logo"/>
+  </header>
+  <div id="adminPanel">
+    <h3>Panel de Administración</h3>
+    <form id="productForm">
+      <div class="mb-3">
+        <input type="text" id="nombre" class="form-control" placeholder="Nombre del producto" required>
+      </div>
+      <div class="mb-3">
+        <input type="text" id="categoria" class="form-control" placeholder="Categoría" required>
+      </div>
+      <div class="mb-3">
+        <input type="text" id="precio" class="form-control" placeholder="Precio" required>
+      </div>
+      <div class="mb-3">
+        <input type="text" id="imagen" class="form-control" placeholder="URL de la imagen" required>
+      </div>
+      <input type="hidden" id="productoId">
+      <button type="submit" class="btn btn-success">Guardar Producto</button>
+    </form>
+  </div>
+
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <select id="filtroCategoria" class="form-select w-auto">
+        <option value="">Todas las categorías</option>
+      </select>
+      <button class="btn btn-outline-light" onclick="cargarProductos()">🔄 Refrescar</button>
     </div>
-    <p>&copy; 2025 COMPRAS DONDE ALEJO</p>
-  </footer>  <script>
-    function pedirClave() {
-      const clave = prompt("Ingrese la clave de administrador:");
-      if (clave === "Alejo123") {
-        document.getElementById("formularioProducto").style.display = "block";
-      } else {
-        alert("Clave incorrecta");
-      }
+    <div id="productosContainer" class="row g-3"></div>
+  </div>
+  <script type="module">
+  // Importar Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // Configuración Firebase actualizada
+  const firebaseConfig = {
+    apiKey: "AIzaSyDvEcUeiEjWwL9S_m0E8AbZT5oL_dBoDD0",
+    authDomain: "compras-donde-alejo.firebaseapp.com",
+    projectId: "compras-donde-alejo",
+    storageBucket: "compras-donde-alejo.appspot.com",
+    messagingSenderId: "368666920508",
+    appId: "1:368666920508:web:cf520a4fbbd6519c12a2e4"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const productosRef = collection(db, "productos");
+
+  // 🔐 Panel administración
+  document.getElementById("adminToggle").addEventListener("click", () => {
+    const clave = prompt("Ingresa la clave secreta:");
+    if (clave === "Alejo123") {
+      document.getElementById("adminPanel").style.display = "block";
+    } else {
+      alert("Clave incorrecta.");
     }
-  </script></body>
-</html>
+  });
+
+  // 🚀 Cargar productos
+  async function cargarProductos() {
+    const contenedor = document.getElementById("productosContainer");
+    contenedor.innerHTML = "";
+    const filtro = document.getElementById("filtroCategoria").value;
+    const snapshot = await getDocs(productosRef);
+    const categorias = new Set();
+
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const id = docSnap.id;
+      categorias.add(data.categoria);
+      if (!filtro || filtro === data.categoria) {
+        const card = document.createElement("div");
+        card.className = "col-md-4";
+        card.innerHTML = `
+          <div class="card h-100 shadow text-white bg-dark">
+            <img src="${data.imagen}" class="card-img-top" alt="${data.nombre}">
+            <div class="card-body">
+              <h5 class="card-title">${data.nombre}</h5>
+              <p class="card-text">Categoría: ${data.categoria}</p>
+              <p class="card-text">Precio: $${data.precio}</p>
+              <a class="btn btn-success w-100 mb-2" target="_blank" href="https://wa.me/573115750320?text=Hola! Quiero comprar: ${encodeURIComponent(data.nombre)}">Comprar por WhatsApp</a>
+              <button class="btn btn-warning w-100 mb-2" onclick="editarProducto('${id}', '${data.nombre}', '${data.categoria}', '${data.precio}', '${data.imagen}')">✏️ Editar</button>
+              <button class="btn btn-danger w-100" onclick="eliminarProducto('${id}')">🗑️ Eliminar</button>
+            </div>
+          </div>
+        `;
+        contenedor.appendChild(card);
+      }
+    });
+
+    // Filtro categorías
+    const filtroSelect = document.getElementById("filtroCategoria");
+    filtroSelect.innerHTML = `<option value="">Todas las categorías</option>`;
+    categorias.forEach(cat => {
+      const option = document.createElement("option");
+      option.value = cat;
+      option.textContent = cat;
+      filtroSelect.appendChild(option);
+    });
+  }
+
+  // 🧾 Guardar producto (nuevo o editado)
+  document.getElementById("productForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nombre = document.getElementById("nombre").value;
+    const categoria = document.getElementById("categoria").value;
+    const precio = document.getElementById("precio").value;
+    const imagen = document.getElementById("imagen").value;
+    const id = document.getElementById("productoId").value;
+
+    if (id) {
+      await updateDoc(doc(db, "productos", id), { nombre, categoria, precio, imagen });
+    } else {
+      await addDoc(productosRef, { nombre, categoria, precio, imagen });
+    }
+
+    document.getElementById("productForm").reset();
+    document.getElementById("productoId").value = "";
+    cargarProductos();
+  });
+
+  // 🖊️ Editar producto
+  window.editarProducto = (id, nombre, categoria, precio, imagen) => {
+    document.getElementById("productoId").value = id;
+    document.getElementById("nombre").value = nombre;
+    document.getElementById("categoria").value = categoria;
+    document.getElementById("precio").value = precio;
+    document.getElementById("imagen").value = imagen;
+    document.getElementById("adminPanel").scrollIntoView({ behavior: "smooth" });
+  };
+
+  // ❌ Eliminar producto con confirmación
+  window.eliminarProducto = async (id) => {
+    const confirmacion = confirm("¿Estás seguro de que deseas eliminar este producto?");
+    if (confirmacion) {
+      await deleteDoc(doc(db, "productos", id));
+      cargarProductos();
+    }
+  };
+
+  // Inicial
+  cargarProductos();
+  document.getElementById("filtroCategoria").addEventListener("change", cargarProductos);
+</script>
+<footer class="bg-dark text-white py-4 mt-5">
+  <div class="container text-center">
+    <p class="mb-3">Síguenos en nuestras redes sociales</p>
+    <div class="d-flex justify-content-center gap-4 flex-wrap">
+      <a href="https://facebook.com" target="_blank" class="text-white">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" width="32" height="32">
+      </a>
+      <a href="https://instagram.com" target="_blank" class="text-white">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" width="32" height="32">
+      </a>
+      <a href="https://tiktok.com" target="_blank" class="text-white">
+        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046122.png" alt="TikTok" width="32" height="32">
+      </a>
+      <a href="https://wa.me/573115750320" target="_blank" class="text-white">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" width="32" height="32">
+      </a>
+      <a href="https://t.me/comprasdondealejo" target="_blank" class="text-white">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" width="32" height="32">
+      </a>
+    </div>
+    <p class="mt-4 mb-0">© 2025 Compras Donde Alejo. Todos los derechos reservados.</p>
+  </div>
+</footer>
