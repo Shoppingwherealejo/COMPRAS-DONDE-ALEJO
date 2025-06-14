@@ -4,233 +4,387 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>COMPRAS DONDE ALEJO</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     body {
-      background-color: #121212;
-      color: #f0f0f0;
-      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #111;
+      color: #fff;
     }
     header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 20px;
-      border-bottom: 2px solid #333;
+      align-items: center;
+      padding: 15px 20px;
+      background-color: #1a1a1a;
+      flex-wrap: wrap;
     }
-    .title-group {
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .refresh-btn {
+      background-color: gray;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      margin-right: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .title-container {
       text-align: center;
-      flex-grow: 1;
+      flex: 1;
     }
-    .title-group h1 {
+    .title-container h1 {
       margin: 0;
-      font-size: 2.5rem;
+      font-size: 24px;
       color: #00aaff;
     }
-    .title-group p {
+    .title-container p {
       margin: 0;
-      font-size: 1.1rem;
+      font-size: 14px;
       color: #ccc;
     }
     .logo {
-      width: 60px;
-      height: auto;
+      height: 50px;
+      margin-left: 10px;
     }
-    #adminBtn {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      background: none;
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .gray-button {
+      background-color: gray;
+      color: white;
       border: none;
-      color: #00aaff;
-      font-size: 24px;
+      padding: 8px 14px;
+      border-radius: 5px;
       cursor: pointer;
-    }
-    #adminPanel {
-      display: none;
-      padding: 20px;
-      background: #1e1e1e;
-      border-top: 1px solid #333;
     }
   </style>
 </head>
 <body>
-  <button id="adminBtn" title="Administrar"><i class="fas fa-wrench"></i></button>
-
   <header>
-    <div class="title-group">
+    <div class="logo-container">
+      <button id="refreshBtn" class="refresh-btn">🔁</button>
+      <img src="logo-alejo.png" alt="Logo" class="logo">
+    </div>
+    <div class="title-container">
       <h1>COMPRAS DONDE ALEJO</h1>
-      <p>Bienvenidos a tu tienda de confianza</p>
+      <p>¡Bienvenido! Encuentra todo lo que necesitas.</p>
     </div>
-    <img src="logo-alejo.png" alt="Logo" class="logo"/>
-  </header>
-  <div id="adminPanel">
-    <h3>Panel de Administración</h3>
-    <form id="productForm">
-      <div class="mb-3">
-        <input type="text" id="nombre" class="form-control" placeholder="Nombre del producto" required>
-      </div>
-      <div class="mb-3">
-        <input type="text" id="categoria" class="form-control" placeholder="Categoría" required>
-      </div>
-      <div class="mb-3">
-        <input type="text" id="precio" class="form-control" placeholder="Precio" required>
-      </div>
-      <div class="mb-3">
-        <input type="text" id="imagen" class="form-control" placeholder="URL de la imagen" required>
-      </div>
-      <input type="hidden" id="productoId">
-      <button type="submit" class="btn btn-success">Guardar Producto</button>
-    </form>
-  </div>
-
-  <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <select id="filtroCategoria" class="form-select w-auto">
-        <option value="">Todas las categorías</option>
+    <div class="controls">
+      <button id="adminBtn" class="gray-button">🔧</button>
+      <select id="categoryFilter" class="gray-button">
+        <option value="todos">Todas las Categorías</option>
+        <!-- Aquí irán las categorías dinámicamente -->
       </select>
-      <button class="btn btn-outline-light" onclick="cargarProductos()">🔄 Refrescar</button>
     </div>
-    <div id="productosContainer" class="row g-3"></div>
-  </div>
+  </header>
+  <main style="padding: 20px;">
+    <div id="productList" style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+      <!-- Productos se cargarán aquí desde Firebase -->
+    </div>
+  </main>
+
+  <!-- Firebase SDK -->
   <script type="module">
-  // Importar Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    // Importar Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // Configuración Firebase actualizada
-  const firebaseConfig = {
-    apiKey: "AIzaSyDvEcUeiEjWwL9S_m0E8AbZT5oL_dBoDD0",
-    authDomain: "compras-donde-alejo.firebaseapp.com",
-    projectId: "compras-donde-alejo",
-    storageBucket: "compras-donde-alejo.appspot.com",
-    messagingSenderId: "368666920508",
-    appId: "1:368666920508:web:cf520a4fbbd6519c12a2e4"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyEXAMPLE",
+      authDomain: "compras-donde-alejo.firebaseapp.com",
+      projectId: "compras-donde-alejo",
+      storageBucket: "compras-donde-alejo.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abc123"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const productosRef = collection(db, "productos");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  // 🔐 Panel administración
-  document.getElementById("adminToggle").addEventListener("click", () => {
-    const clave = prompt("Ingresa la clave secreta:");
-    if (clave === "Alejo123") {
-      document.getElementById("adminPanel").style.display = "block";
-    } else {
-      alert("Clave incorrecta.");
+    const productList = document.getElementById("productList");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    let allProducts = [];
+
+    async function loadProducts() {
+      const querySnapshot = await getDocs(collection(db, "productos"));
+      productList.innerHTML = "";
+      allProducts = [];
+      let categories = new Set();
+
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const id = docSnap.id;
+        allProducts.push({ id, ...data });
+        categories.add(data.categoria);
+
+        const productCard = createProductCard({ id, ...data });
+        productList.appendChild(productCard);
+      });
+
+      // Actualizar categorías
+      categoryFilter.innerHTML = `<option value="todos">Todas las Categorías</option>`;
+      [...categories].sort().forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        categoryFilter.appendChild(option);
+      });
     }
-  });
 
-  // 🚀 Cargar productos
-  async function cargarProductos() {
-    const contenedor = document.getElementById("productosContainer");
-    contenedor.innerHTML = "";
-    const filtro = document.getElementById("filtroCategoria").value;
-    const snapshot = await getDocs(productosRef);
-    const categorias = new Set();
+    function createProductCard(product) {
+      const div = document.createElement("div");
+      div.style.background = "#222";
+      div.style.borderRadius = "10px";
+      div.style.padding = "10px";
+      div.style.textAlign = "center";
+      div.innerHTML = `
+        <img src="${product.imagen}" alt="${product.nombre}" style="width:100%; height:150px; object-fit:cover; border-radius: 8px;" />
+        <h3 style="margin:10px 0; font-size:18px;">${product.nombre}</h3>
+        <p style="color:#0af;">${product.categoria}</p>
+        <p style="font-weight:bold;">$${product.precio}</p>
+        <a href="https://wa.me/573115750320?text=Hola%20quiero%20comprar:%20${encodeURIComponent(product.nombre)}" target="_blank" class="gray-button" style="display:block; margin-top:10px;">Comprar por WhatsApp</a>
+        <div class="admin-controls" style="margin-top:10px; display:none;">
+          <button onclick="editProduct('${product.id}')" class="gray-button">✏️ Editar</button>
+          <button onclick="deleteProduct('${product.id}')" class="gray-button">🗑️ Eliminar</button>
+        </div>
+      `;
+      return div;
+    }
 
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      const id = docSnap.id;
-      categorias.add(data.categoria);
-      if (!filtro || filtro === data.categoria) {
-        const card = document.createElement("div");
-        card.className = "col-md-4";
-        card.innerHTML = `
-          <div class="card h-100 shadow text-white bg-dark">
-            <img src="${data.imagen}" class="card-img-top" alt="${data.nombre}">
-            <div class="card-body">
-              <h5 class="card-title">${data.nombre}</h5>
-              <p class="card-text">Categoría: ${data.categoria}</p>
-              <p class="card-text">Precio: $${data.precio}</p>
-              <a class="btn btn-success w-100 mb-2" target="_blank" href="https://wa.me/573115750320?text=Hola! Quiero comprar: ${encodeURIComponent(data.nombre)}">Comprar por WhatsApp</a>
-              <button class="btn btn-warning w-100 mb-2" onclick="editarProducto('${id}', '${data.nombre}', '${data.categoria}', '${data.precio}', '${data.imagen}')">✏️ Editar</button>
-              <button class="btn btn-danger w-100" onclick="eliminarProducto('${id}')">🗑️ Eliminar</button>
-            </div>
-          </div>
-        `;
-        contenedor.appendChild(card);
+    categoryFilter.addEventListener("change", () => {
+      const value = categoryFilter.value;
+      productList.innerHTML = "";
+      const filtered = value === "todos" ? allProducts : allProducts.filter(p => p.categoria === value);
+      filtered.forEach(prod => {
+        const card = createProductCard(prod);
+        productList.appendChild(card);
+      });
+    });
+
+    refreshBtn.addEventListener("click", () => {
+      loadProducts();
+    });
+
+    // Cargar productos inicialmente
+    loadProducts();
+  </script>
+  <main style="padding: 20px;">
+    <div id="productList" style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+      <!-- Productos se cargarán aquí desde Firebase -->
+    </div>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    // Importar Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyEXAMPLE",
+      authDomain: "compras-donde-alejo.firebaseapp.com",
+      projectId: "compras-donde-alejo",
+      storageBucket: "compras-donde-alejo.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abc123"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const productList = document.getElementById("productList");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    let allProducts = [];
+
+    async function loadProducts() {
+      const querySnapshot = await getDocs(collection(db, "productos"));
+      productList.innerHTML = "";
+      allProducts = [];
+      let categories = new Set();
+
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const id = docSnap.id;
+        allProducts.push({ id, ...data });
+        categories.add(data.categoria);
+
+        const productCard = createProductCard({ id, ...data });
+        productList.appendChild(productCard);
+      });
+
+      // Actualizar categorías
+      categoryFilter.innerHTML = `<option value="todos">Todas las Categorías</option>`;
+      [...categories].sort().forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        categoryFilter.appendChild(option);
+      });
+    }
+
+    function createProductCard(product) {
+      const div = document.createElement("div");
+      div.style.background = "#222";
+      div.style.borderRadius = "10px";
+      div.style.padding = "10px";
+      div.style.textAlign = "center";
+      div.innerHTML = `
+        <img src="${product.imagen}" alt="${product.nombre}" style="width:100%; height:150px; object-fit:cover; border-radius: 8px;" />
+        <h3 style="margin:10px 0; font-size:18px;">${product.nombre}</h3>
+        <p style="color:#0af;">${product.categoria}</p>
+        <p style="font-weight:bold;">$${product.precio}</p>
+        <a href="https://wa.me/573115750320?text=Hola%20quiero%20comprar:%20${encodeURIComponent(product.nombre)}" target="_blank" class="gray-button" style="display:block; margin-top:10px;">Comprar por WhatsApp</a>
+        <div class="admin-controls" style="margin-top:10px; display:none;">
+          <button onclick="editProduct('${product.id}')" class="gray-button">✏️ Editar</button>
+          <button onclick="deleteProduct('${product.id}')" class="gray-button">🗑️ Eliminar</button>
+        </div>
+      `;
+      return div;
+    }
+
+    categoryFilter.addEventListener("change", () => {
+      const value = categoryFilter.value;
+      productList.innerHTML = "";
+      const filtered = value === "todos" ? allProducts : allProducts.filter(p => p.categoria === value);
+      filtered.forEach(prod => {
+        const card = createProductCard(prod);
+        productList.appendChild(card);
+      });
+    });
+
+    refreshBtn.addEventListener("click", () => {
+      loadProducts();
+    });
+
+    // Cargar productos inicialmente
+    loadProducts();
+  </script>
+  <!-- Formulario oculto para agregar o editar productos -->
+  <section id="formSection" style="display: none; padding: 20px; background: #111; margin: 20px; border-radius: 10px;">
+    <h2 style="color: #0af;">Agregar o Editar Producto</h2>
+    <form id="productForm">
+      <input type="hidden" id="productoId" />
+      <input type="text" id="nombre" placeholder="Nombre del producto" required><br>
+      <input type="text" id="categoria" placeholder="Categoría" required><br>
+      <input type="number" id="precio" placeholder="Precio" required><br>
+      <input type="url" id="imagen" placeholder="URL de la imagen" required><br>
+      <button type="submit" class="gray-button">Guardar Producto</button>
+    </form>
+  </section>
+
+  <script type="module">
+    const adminBtn = document.getElementById("adminBtn");
+    const formSection = document.getElementById("formSection");
+    const productForm = document.getElementById("productForm");
+    const productoId = document.getElementById("productoId");
+    const nombre = document.getElementById("nombre");
+    const categoria = document.getElementById("categoria");
+    const precio = document.getElementById("precio");
+    const imagen = document.getElementById("imagen");
+
+    let isAdmin = false;
+
+    adminBtn.addEventListener("click", () => {
+      const clave = prompt("Ingresa la clave secreta:");
+      if (clave === "Alejo123") {
+        isAdmin = true;
+        formSection.style.display = "block";
+        document.querySelectorAll(".admin-controls").forEach(el => el.style.display = "block");
+        alert("Modo administrador activado.");
+      } else {
+        alert("Clave incorrecta.");
       }
     });
 
-    // Filtro categorías
-    const filtroSelect = document.getElementById("filtroCategoria");
-    filtroSelect.innerHTML = `<option value="">Todas las categorías</option>`;
-    categorias.forEach(cat => {
-      const option = document.createElement("option");
-      option.value = cat;
-      option.textContent = cat;
-      filtroSelect.appendChild(option);
+    productForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = {
+        nombre: nombre.value,
+        categoria: categoria.value,
+        precio: parseFloat(precio.value),
+        imagen: imagen.value
+      };
+
+      try {
+        if (productoId.value) {
+          // Editar producto
+          const ref = doc(db, "productos", productoId.value);
+          await updateDoc(ref, data);
+          alert("Producto actualizado.");
+        } else {
+          // Agregar producto nuevo
+          await addDoc(collection(db, "productos"), data);
+          alert("Producto agregado.");
+        }
+        productForm.reset();
+        productoId.value = "";
+        loadProducts();
+      } catch (err) {
+        alert("Error al guardar producto.");
+      }
     });
-  }
 
-  // 🧾 Guardar producto (nuevo o editado)
-  document.getElementById("productForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const nombre = document.getElementById("nombre").value;
-    const categoria = document.getElementById("categoria").value;
-    const precio = document.getElementById("precio").value;
-    const imagen = document.getElementById("imagen").value;
-    const id = document.getElementById("productoId").value;
+    window.editProduct = async (id) => {
+      const prod = allProducts.find(p => p.id === id);
+      if (!prod) return;
+      productoId.value = prod.id;
+      nombre.value = prod.nombre;
+      categoria.value = prod.categoria;
+      precio.value = prod.precio;
+      imagen.value = prod.imagen;
+      formSection.scrollIntoView({ behavior: "smooth" });
+    };
 
-    if (id) {
-      await updateDoc(doc(db, "productos", id), { nombre, categoria, precio, imagen });
-    } else {
-      await addDoc(productosRef, { nombre, categoria, precio, imagen });
-    }
-
-    document.getElementById("productForm").reset();
-    document.getElementById("productoId").value = "";
-    cargarProductos();
-  });
-
-  // 🖊️ Editar producto
-  window.editarProducto = (id, nombre, categoria, precio, imagen) => {
-    document.getElementById("productoId").value = id;
-    document.getElementById("nombre").value = nombre;
-    document.getElementById("categoria").value = categoria;
-    document.getElementById("precio").value = precio;
-    document.getElementById("imagen").value = imagen;
-    document.getElementById("adminPanel").scrollIntoView({ behavior: "smooth" });
-  };
-
-  // ❌ Eliminar producto con confirmación
-  window.eliminarProducto = async (id) => {
-    const confirmacion = confirm("¿Estás seguro de que deseas eliminar este producto?");
-    if (confirmacion) {
-      await deleteDoc(doc(db, "productos", id));
-      cargarProductos();
-    }
-  };
-
-  // Inicial
-  cargarProductos();
-  document.getElementById("filtroCategoria").addEventListener("change", cargarProductos);
-</script>
-<footer class="bg-dark text-white py-4 mt-5">
-  <div class="container text-center">
-    <p class="mb-3">Síguenos en nuestras redes sociales</p>
-    <div class="d-flex justify-content-center gap-4 flex-wrap">
-      <a href="https://facebook.com" target="_blank" class="text-white">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" width="32" height="32">
+    window.deleteProduct = async (id) => {
+      const confirmDelete = confirm("¿Estás seguro de eliminar este producto?");
+      if (!confirmDelete) return;
+      try {
+        await deleteDoc(doc(db, "productos", id));
+        alert("Producto eliminado.");
+        loadProducts();
+      } catch (err) {
+        alert("Error al eliminar producto.");
+      }
+    };
+  </script>
+ <footer style="background-color: #000; padding: 30px 10px; color: white; text-align: center; margin-top: 40px;">
+    <h3 style="margin-bottom: 10px;">Síguenos en nuestras redes sociales</h3>
+    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+      <a href="https://facebook.com/comprasdondealejo" target="_blank" title="Facebook">
+        <img src="https://cdn-icons-png.flaticon.com/512/145/145802.png" width="35" alt="Facebook">
       </a>
-      <a href="https://instagram.com" target="_blank" class="text-white">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" width="32" height="32">
+      <a href="https://instagram.com/comprasdondealejo" target="_blank" title="Instagram">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" width="35" alt="Instagram">
       </a>
-      <a href="https://tiktok.com" target="_blank" class="text-white">
-        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046122.png" alt="TikTok" width="32" height="32">
+      <a href="https://tiktok.com/@comprasdondealejo" target="_blank" title="TikTok">
+        <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" width="35" alt="TikTok">
       </a>
-      <a href="https://wa.me/573115750320" target="_blank" class="text-white">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" width="32" height="32">
+      <a href="https://wa.me/573115750320" target="_blank" title="WhatsApp">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="35" alt="WhatsApp">
       </a>
-      <a href="https://t.me/comprasdondealejo" target="_blank" class="text-white">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" width="32" height="32">
+      <a href="https://t.me/comprasdondealejo" target="_blank" title="Telegram">
+        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="35" alt="Telegram">
       </a>
     </div>
-    <p class="mt-4 mb-0">© 2025 Compras Donde Alejo. Todos los derechos reservados.</p>
-  </div>
-</footer>
+    <p style="font-size: 14px;">COMPRAS DONDE ALEJO © 2025 - Todos los derechos reservados</p>
+  </footer>
+</body>
+</html>
